@@ -3,20 +3,25 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
 	console.log('receive msg from background scripts');
 	console.log(msg);
 	if(msg.url.indexOf('www.youtube.com/results') != -1){
-		init();		
+		init('search_results');		
 	}
+	else if(msg.url == 'http://www.youtube.com/'){
+		init('main_page');		
+	} 
 });
 
 
-function init(){
-	var o_peepTube = new peepTube();
+function init(page){
 	// Append the content modal
-	$('#content').before("<div id='peepContainer'></div>");
+
+	var o_peepTube = new peepTube();
+	// initialize the content modal
+	o_peepTube.initModal();
 
 	// Append preview buttons
-	$( ".yt-lockup" ).before( "<button class='peepButton glyphicon glyphicon-eye-open btn btn-default'></button>" );
+	o_peepTube.appendBtn(page);
 
-	// Add button event action (load the modal)
+	// Add "load modal" button event 
 	$('.peepButton').on('click',function(){		
 		var clickedBtn = this;
 		o_peepTube.renderModal(clickedBtn);
@@ -24,29 +29,76 @@ function init(){
 
 	// content modal close event (close the modal)
 	$('#peepContainer').click(function(){
-		o_peepTube.closeModal(this);
+		o_peepTube.closeModal();
 	});	
+
+	// Add "shrink peep" button event
+	$('#peepShrinkBtn').on('click',function(){
+		o_peepTube.shinkPeepView();
+	});
 }
 
 // peepTube Class
 function peepTube(){
 	var peepTubeComponent = this;
-	// Public methods
+	// Public methods	
+	peepTubeComponent.appendBtn = function(page){
+		//var resultUrl = $('.yt-lockup').find('a').attr('href');
+		$('.yt-lockup').each(function(idx,e){
+			var currentDOM = e;
+			var resultUrl = $(currentDOM).find('a').attr('href');
+			if (resultUrl.indexOf('/watch?v=') != -1){
+				switch(page){
+					case 'search_results':
+						$(currentDOM).before( "<button class='peepButton peepBtn-results glyphicon glyphicon-eye-open btn btn-default'></button>" );
+						break;
+					case 'main_page':
+						$(currentDOM).before( "<button class='peepButton peepBtn-main glyphicon glyphicon-eye-open btn btn-default'></button>" );
+						break;	
+				}
+			}
+		});
+
+	};
+
+	peepTubeComponent.initModal = function(){
+		$('#content').before("<div id='peepContainer'></div>");
+		$('#content').before("<button id='peepShrinkBtn' class='glyphicon glyphicon-import btn btn-default'></button>");
+
+	};
+
 	peepTubeComponent.renderModal = function(clickedBtn){
 		$('body').css({"overflow":'hidden'});
 		var previewUrl = $(clickedBtn).next().eq(0).find('a').attr('href');
-		//console.log(previewUrl);
+		console.log(previewUrl);
 		var iframeObj = iframeObjGenerator(previewUrl);
-										  
+		
+
+		initDefaultView(); // initialize the container css for modal
 		$('#peepContainer').fadeIn(function(){
-			$(this).empty().append(iframeObj);
-		});		
+			$('#peepContainer').append("<button type='button' class='close peepClose-btn' aria-hidden='true'>&times;</button>")
+								.append(iframeObj);
+		});	
+		$('#peepShrinkBtn').fadeIn();
 	};
 
-	peepTubeComponent.closeModal = function(modalDOM){
+	peepTubeComponent.closeModal = function(){
 		$('body').css({"overflow":'auto'});
-		$(modalDOM).empty().fadeOut();
-	}
+		$('#peepContainer').fadeOut(function(){
+			$('#peepContainer').empty();			
+		});
+		$('#peepShrinkBtn').fadeOut();
+	};
+
+	peepTubeComponent.shinkPeepView = function(){
+		initShrinkView(); // initialize the container css for shink view
+		$('#peepContainer').find('iframe').attr({width:'360px', height: '200px'})
+						.css({top: '40px', right: '0px', 'position': 'absolute', 'z-index': '1000'});
+		$('body').css({"overflow":'auto'});
+		$('#peepShrinkBtn').fadeOut();
+
+	};
+
 	// Private methods
 	var iframeObjGenerator = function(previewUrl){
 		/* ===== previewUrl variable types ======
@@ -65,13 +117,10 @@ function peepTube(){
 			// Get embed video url
 			var splitToken = '/watch?v=';
 			var embedVideoID = previewUrl.split(splitToken)[1].replace('&list','?list');
-			console.log(embedVideoID);
 
 			// Setting iframe position
 			var topOffset = $(document).scrollTop() + 20; // add 20px top offset		
-			
 			var contentAreaWidth = $('#content').width(); // Get content area width
-
 			var baseWidth = 560.0;
 			var baseHeight = 315.0;
 			var ratio = (contentAreaWidth/baseWidth) * 0.8;
@@ -83,5 +132,11 @@ function peepTube(){
 							src="//www.youtube.com/embed/' + embedVideoID + '" frameborder="0"></iframe>';
 			return iframeObj;
 		}
+	};
+	var initDefaultView = function(){
+		$('#peepContainer').empty().removeClass('shrinkContainerView').addClass('defaultContainerView');
+	};
+	var initShrinkView = function(){
+		$('#peepContainer').removeClass('defaultContainerView').addClass('shrinkContainerView');
 	};
 }

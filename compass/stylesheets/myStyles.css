@@ -1,21 +1,67 @@
 /* line 3, ../sass/myStyles.sass */
-#peepContainer {
+.defaultContainerView {
   position: absolute;
   height: 100%;
   width: 100%;
-  z-index: 9999;
+  z-index: 999;
   background: black;
-  display: none;
   /* Fallback for web browsers that doesn't support RGBa */
   background: black;
   /* RGBa with 0.85 opacity */
   background: rgba(0, 0, 0, 0.85);
+  pointer: cursor;
 }
 
-/* line 15, ../sass/myStyles.sass */
-.peepButton {
+/* line 16, ../sass/myStyles.sass */
+.shrinkContainerView {
+  height: 250px;
+  width: 400px;
+  position: fixed;
+  z-index: 999;
+  right: 30px;
+  bottom: 0;
+  pointer: cursor;
+}
+
+/* line 26, ../sass/myStyles.sass */
+.peepClose-btn {
+  position: absolute;
+  top: 20px;
+  right: -10px;
+  color: white;
+}
+
+/* line 32, ../sass/myStyles.sass */
+#peepShrinkBtn {
+  position: fixed;
+  font-size: 3em;
+  right: 0;
+  height: 50px;
+  top: 100px;
+  z-index: 1000;
+  display: none;
+}
+
+/* line 41, ../sass/myStyles.sass */
+.peepBtn-results {
   position: absolute;
   float: right;
   height: 125px;
   left: 0;
+}
+
+/* line 47, ../sass/myStyles.sass */
+.peepBtn-main {
+  position: absolute;
+  float: right;
+  width: 175px;
+  left: 0;
+  background: red;
+}
+
+/* line 55, ../sass/myStyles.sass */
+.peepShinkView {
+  position: absolute;
+  left: 100%;
+  top: 50%;
 }
