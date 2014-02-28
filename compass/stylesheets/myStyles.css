@@ -1,0 +1,21 @@
+/* line 3, ../sass/myStyles.sass */
+#peepContainer {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 9999;
+  background: black;
+  display: none;
+  /* Fallback for web browsers that doesn't support RGBa */
+  background: black;
+  /* RGBa with 0.85 opacity */
+  background: rgba(0, 0, 0, 0.85);
+}
+
+/* line 15, ../sass/myStyles.sass */
+.peepButton {
+  position: absolute;
+  float: right;
+  height: 125px;
+  left: 0;
+}

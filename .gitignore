@@ -1,4 +1,6 @@
 venv
+HelloWorld
+compass/.sass-cache/
 *.pyc
 *.png
 *.jpg
