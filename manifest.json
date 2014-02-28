@@ -6,13 +6,13 @@
   "version": "1.0",
    "background": {
       "persistent":false,
-      "scripts": ["background.js","underscore-min.js"]
+      "scripts": ["background.js","js/underscore-min.js"]
     }, 
   "content_scripts": [
     {
       "matches": ["http://www.youtube.com/*"],
-      "css": ["compass/stylesheets/myStyles.css","bootstrap.css"],
-      "js": ["jquery-2.1.0.min.js","bootstrap.min.js","myScript.js"]
+      "css": ["compass/stylesheets/myStyles.css","css/bootstrap.css"],
+      "js": ["js/jquery-2.1.0.min.js","js/bootstrap.min.js","myScript.js"]
     }
   ],
   "permissions": ["tabs", "http://www.youtube.com/*","webNavigation"]
