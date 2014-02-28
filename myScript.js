@@ -1,8 +1,10 @@
-$(document).ready(function(){
-	console.log('You are in Youtube (document ready)');
-	//alert("Hello dreamdu123111!");	
-	init();
-	console.log(chrome.webNavigation);
+// Listen the background script msg
+chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
+	console.log('receive msg from background scripts');
+	console.log(msg);
+	if(msg.url.indexOf('www.youtube.com/results') != -1){
+		init();		
+	}
 });
 
 
