@@ -4,30 +4,32 @@
 	position: absolute
 	height: 100%
 	width: 100%
-	z-index: 999
+	z-index: 999	
 	background: black
 	//display: none
 	/* Fallback for web browsers that doesn't support RGBa */
 	background: rgb(0, 0, 0)
 	/* RGBa with 0.85 opacity */
 	background: rgba(0, 0, 0, 0.85)
-	pointer: cursor
+	cursor: pointer
+
 
 .shrinkContainerView
-	height: 250px
-	width: 400px
+	height: 230px
+	width: 360px
 	position: fixed
 	z-index: 999
-	right: 30px
-	bottom: 0
-	pointer: cursor
-	//background: red
+	cursor: move
+	background: #333333
+	&:hover
+		background: #999999
 
-.peepClose-btn
+#peepClose-btn
 	position: absolute
-	top: 20px
-	right: -10px
-	color: white
+	top: 0px
+	right: -15px
+	color: black
+	font-size: 2em
 
 #peepShrinkBtn
 	position: fixed

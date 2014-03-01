@@ -26,16 +26,6 @@ function init(page){
 		var clickedBtn = this;
 		o_peepTube.renderModal(clickedBtn);
 	});
-
-	// content modal close event (close the modal)
-	$('#peepContainer').click(function(){
-		o_peepTube.closeModal();
-	});	
-
-	// Add "shrink peep" button event
-	$('#peepShrinkBtn').on('click',function(){
-		o_peepTube.shinkPeepView();
-	});
 }
 
 // peepTube Class
@@ -58,7 +48,6 @@ function peepTube(){
 				}
 			}
 		});
-
 	};
 
 	peepTubeComponent.initModal = function(){
@@ -72,12 +61,10 @@ function peepTube(){
 		var previewUrl = $(clickedBtn).next().eq(0).find('a').attr('href');
 		console.log(previewUrl);
 		var iframeObj = iframeObjGenerator(previewUrl);
-		
-
 		initDefaultView(); // initialize the container css for modal
 		$('#peepContainer').fadeIn(function(){
-			$('#peepContainer').append("<button type='button' class='close peepClose-btn' aria-hidden='true'>&times;</button>")
-								.append(iframeObj);
+			$('#peepContainer').append("<button type='button' id='peepClose-btn' class='close' aria-hidden='true'>&times;</button>")
+								.append(iframeObj);		
 		});	
 		$('#peepShrinkBtn').fadeIn();
 	};
@@ -93,10 +80,14 @@ function peepTube(){
 	peepTubeComponent.shinkPeepView = function(){
 		initShrinkView(); // initialize the container css for shink view
 		$('#peepContainer').find('iframe').attr({width:'360px', height: '200px'})
-						.css({top: '40px', right: '0px', 'position': 'absolute', 'z-index': '1000'});
+						.css({top: '20px', left: '0px', 'position': 'absolute', 'z-index': '1000'});
 		$('body').css({"overflow":'auto'});
 		$('#peepShrinkBtn').fadeOut();
 
+	};
+
+	peepTubeComponent.dragPeepView = function(xPosition, yPosition){
+		$('#peepContainer').css({'right': yPosition});
 	};
 
 	// Private methods
@@ -134,9 +125,34 @@ function peepTube(){
 		}
 	};
 	var initDefaultView = function(){
+		// destroy the drag event handler & initialize the container position
+		$('.shrinkContainerView').draggable('destroy');
+		$('#peepContainer').css({'top': '0px', 'left': '0px'});		
+
+		// change class
 		$('#peepContainer').empty().removeClass('shrinkContainerView').addClass('defaultContainerView');
+		// content modal close event (close the modal)
+		$('#peepContainer').on('click',function(){
+			if($(this).hasClass('defaultContainerView')){
+				peepTubeComponent.closeModal();
+			}		
+		});
+
+		// Add "shrink peep" button event
+		$('#peepShrinkBtn').on('click',function(){
+			peepTubeComponent.shinkPeepView();
+		});	
 	};
 	var initShrinkView = function(){
 		$('#peepContainer').removeClass('defaultContainerView').addClass('shrinkContainerView');
+		
+		// Add "close btn" event
+		$('#peepClose-btn').bind('click',function(){
+			peepTubeComponent.closeModal();
+		});	
+		
+		// Add "shrink peep" dragable event & setting the container position
+		$('.shrinkContainerView').draggable();
+		$('#peepContainer').css({'right': '20px', 'bottom': '0px', 'top': '', 'left': ''});		
 	};
 }

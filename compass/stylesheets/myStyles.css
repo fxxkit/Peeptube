@@ -9,29 +9,33 @@
   background: black;
   /* RGBa with 0.85 opacity */
   background: rgba(0, 0, 0, 0.85);
-  pointer: cursor;
+  cursor: pointer;
 }
 
-/* line 16, ../sass/myStyles.sass */
+/* line 17, ../sass/myStyles.sass */
 .shrinkContainerView {
-  height: 250px;
-  width: 400px;
+  height: 230px;
+  width: 360px;
   position: fixed;
   z-index: 999;
-  right: 30px;
-  bottom: 0;
-  pointer: cursor;
+  cursor: move;
+  background: #333333;
+}
+/* line 24, ../sass/myStyles.sass */
+.shrinkContainerView:hover {
+  background: #999999;
 }
 
-/* line 26, ../sass/myStyles.sass */
-.peepClose-btn {
+/* line 27, ../sass/myStyles.sass */
+#peepClose-btn {
   position: absolute;
-  top: 20px;
-  right: -10px;
-  color: white;
+  top: 0px;
+  right: -15px;
+  color: black;
+  font-size: 2em;
 }
 
-/* line 32, ../sass/myStyles.sass */
+/* line 34, ../sass/myStyles.sass */
 #peepShrinkBtn {
   position: fixed;
   font-size: 3em;
@@ -42,7 +46,7 @@
   display: none;
 }
 
-/* line 41, ../sass/myStyles.sass */
+/* line 43, ../sass/myStyles.sass */
 .peepBtn-results {
   position: absolute;
   float: right;
@@ -50,7 +54,7 @@
   left: 0;
 }
 
-/* line 47, ../sass/myStyles.sass */
+/* line 49, ../sass/myStyles.sass */
 .peepBtn-main {
   position: absolute;
   float: right;
@@ -59,7 +63,7 @@
   background: red;
 }
 
-/* line 55, ../sass/myStyles.sass */
+/* line 57, ../sass/myStyles.sass */
 .peepShinkView {
   position: absolute;
   left: 100%;
