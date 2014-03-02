@@ -119,7 +119,7 @@ function peepTube(){
 			var realHeight = baseHeight * ratio;
 
 			var iframeObj = '<iframe width="' + realWidth + '" height="'+ realHeight + '" \
-							style="top:' + topOffset + 'px; position: absolute; left: 15%;" \
+							style="top:' + topOffset + 'px; position: absolute; right: 15%;" \
 							src="//www.youtube.com/embed/' + embedVideoID + '" frameborder="0"></iframe>';
 			return iframeObj;
 		}
