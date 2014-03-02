@@ -10,10 +10,10 @@
     }, 
   "content_scripts": [
     {
-      "matches": ["http://www.youtube.com/*"],
+      "matches": ["*://www.youtube.com/*"],
       "css": ["compass/stylesheets/myStyles.css","css/bootstrap.css"],
       "js": ["js/jquery-2.1.0.min.js","js/bootstrap.min.js","js/jquery-ui-1.10.4.custom.min.js","myScript.js"]
     }
   ],
-  "permissions": ["tabs", "http://www.youtube.com/*","webNavigation"]
+  "permissions": ["tabs", "*://www.youtube.com/*","webNavigation"]
 }
