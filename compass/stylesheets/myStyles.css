@@ -23,19 +23,23 @@
 }
 /* line 24, ../sass/myStyles.sass */
 .shrinkContainerView:hover {
-  background: #999999;
+  background: #777777;
 }
 
 /* line 27, ../sass/myStyles.sass */
 #peepClose-btn {
   position: absolute;
-  top: 0px;
-  right: -15px;
-  color: black;
+  top: -3px;
+  right: 0px;
+  color: white;
   font-size: 2em;
 }
+/* line 33, ../sass/myStyles.sass */
+#peepClose-btn:hover {
+  color: #222222;
+}
 
-/* line 34, ../sass/myStyles.sass */
+/* line 36, ../sass/myStyles.sass */
 #peepShrinkBtn {
   position: fixed;
   font-size: 3em;
@@ -46,7 +50,7 @@
   display: none;
 }
 
-/* line 43, ../sass/myStyles.sass */
+/* line 45, ../sass/myStyles.sass */
 .peepBtn-results {
   position: absolute;
   float: right;
@@ -54,7 +58,7 @@
   left: 0;
 }
 
-/* line 49, ../sass/myStyles.sass */
+/* line 51, ../sass/myStyles.sass */
 .peepBtn-main {
   position: absolute;
   float: right;
@@ -63,7 +67,7 @@
   background: red;
 }
 
-/* line 57, ../sass/myStyles.sass */
+/* line 59, ../sass/myStyles.sass */
 .peepShinkView {
   position: absolute;
   left: 100%;
