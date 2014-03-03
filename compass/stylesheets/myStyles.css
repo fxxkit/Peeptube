@@ -73,3 +73,11 @@
   left: 100%;
   top: 50%;
 }
+
+/* line 64, ../sass/myStyles.sass */
+#shrinkMovie-btn {
+  margin-left: 8px;
+  width: 80px;
+  height: 30px;
+  font-size: 1.4em;
+}

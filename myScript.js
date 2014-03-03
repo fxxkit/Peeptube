@@ -5,6 +5,9 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
 	if(msg.url.indexOf('www.youtube.com/results') != -1){
 		init('search_results');		
 	}
+	else if (msg.url.indexOf('http://www.youtube.com/watch') != -1){
+		init('watch_video');
+	}
 	else if(msg.url == 'http://www.youtube.com/'){
 		init('main_page');		
 	} 
@@ -12,8 +15,6 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
 
 
 function init(page){
-	// Append the content modal
-
 	var o_peepTube = new peepTube();
 	// initialize the content modal
 	o_peepTube.initModal();
@@ -33,38 +34,46 @@ function peepTube(){
 	var peepTubeComponent = this;
 	// Public methods	
 	peepTubeComponent.appendBtn = function(page){
-		//var resultUrl = $('.yt-lockup').find('a').attr('href');
-		$('.yt-lockup').each(function(idx,e){
-			var currentDOM = e;
-			var resultUrl = $(currentDOM).find('a').attr('href');
-			if (resultUrl.indexOf('/watch?v=') != -1){
-				switch(page){
-					case 'search_results':
-						$(currentDOM).before( "<button class='peepButton peepBtn-results glyphicon glyphicon-eye-open btn btn-default'></button>" );
-						break;
-					case 'main_page':
-						$(currentDOM).before( "<button class='peepButton peepBtn-main glyphicon glyphicon-eye-open btn btn-default'></button>" );
-						break;	
+		if (page == 'watch_video'){
+			initYTShrink();
+		}		
+		else{
+			//Add peep button
+			$('.yt-lockup').each(function(idx,e){
+				var currentDOM = e;
+				var resultUrl = $(currentDOM).find('a').attr('href');
+				if (resultUrl.indexOf('/watch?v=') != -1){
+					switch(page){
+						case 'search_results':
+							$(currentDOM).before( "<button class='peepButton peepBtn-results glyphicon glyphicon-eye-open btn btn-default'></button>" );
+							break;
+						case 'main_page':
+							$(currentDOM).before( "<button class='peepButton peepBtn-main glyphicon glyphicon-eye-open btn btn-default'></button>" );
+							break;
+					}
 				}
-			}
-		});
+			});			
+		}		
 	};
 
 	peepTubeComponent.initModal = function(){
 		$('#content').before("<div id='peepContainer'></div>");
 		$('#content').before("<button id='peepShrinkBtn' class='glyphicon glyphicon-import btn btn-default'></button>");
-
+		//$('#watch7-user-header').append( "<button id='shrinkMovie-btn' class=' glyphicon glyphicon-import btn btn-default'></button>" );
 	};
 
 	peepTubeComponent.renderModal = function(clickedBtn){
 		$('body').css({"overflow":'hidden'});
 		var previewUrl = $(clickedBtn).next().eq(0).find('a').attr('href');
+		var splitToken = '/watch?v=';
+		var embedVideoID = previewUrl.split(splitToken)[1].replace('&list','?list');
+
 		console.log(previewUrl);
-		var iframeObj = iframeObjGenerator(previewUrl);
+		var iframeObj = iframeObjGenerator(embedVideoID);
 		initDefaultView(); // initialize the container css for modal
 		$('#peepContainer').fadeIn(function(){
 			$('#peepContainer').append("<button type='button' id='peepClose-btn' class='close' aria-hidden='true'>&times;</button>")
-								.append(iframeObj);		
+							.append(iframeObj);
 		});	
 		$('#peepShrinkBtn').fadeIn();
 	};
@@ -91,38 +100,23 @@ function peepTube(){
 	};
 
 	// Private methods
-	var iframeObjGenerator = function(previewUrl){
-		/* ===== previewUrl variable types ======
-		/watch?v=8PSvDdL2BPs 	
-			<iframe width="560" height="315" src="//www.youtube.com/embed/3viG5ahiX1Q" frameborder="0" allowfullscreen></iframe>
-		/watch?v=ivm6BkDmxRg&list=PL1BDC0510CF0F2E3D
-			<iframe width="560" height="315" src="//www.youtube.com/embed/ivm6BkDmxRg?list=PL1BDC0510CF0F2E3D" frameborder="0" allowfullscreen></iframe> 
-		/channel/UCrnX9veC-z_AErUn8D0GCkA
-		## do not show button
-		*/		
-		if(previewUrl.indexOf('/channel/') != -1){
-			console.log('This is channel url');
-			return false;
-		}
-		else{
-			// Get embed video url
-			var splitToken = '/watch?v=';
-			var embedVideoID = previewUrl.split(splitToken)[1].replace('&list','?list');
+	var iframeObjGenerator = function(embedVideoID, startTime){
+    	startTime = typeof startTime !== 'undefined' ? startTime : 0;
 
-			// Setting iframe position
-			var topOffset = $(document).scrollTop() + 20; // add 20px top offset		
-			var contentAreaWidth = $('#content').width(); // Get content area width
-			var baseWidth = 560.0;
-			var baseHeight = 315.0;
-			var ratio = (contentAreaWidth/baseWidth) * 0.8;
-			var realWidth = baseWidth * ratio;
-			var realHeight = baseHeight * ratio;
+		// Setting iframe position
+		var topOffset = $(document).scrollTop() + 20; // add 20px top offset		
+		var contentAreaWidth = $('#content').width(); // Get content area width
+		var baseWidth = 560.0;
+		var baseHeight = 315.0;
+		var ratio = (contentAreaWidth/baseWidth) * 0.8;
+		var realWidth = baseWidth * ratio;
+		var realHeight = baseHeight * ratio;
 
-			var iframeObj = '<iframe width="' + realWidth + '" height="'+ realHeight + '" \
-							style="top:' + topOffset + 'px; position: absolute; right: 15%;" \
-							src="//www.youtube.com/embed/' + embedVideoID + '" frameborder="0"></iframe>';
-			return iframeObj;
-		}
+		var iframeObj = '<iframe id="YTplayer" width="' + realWidth + '" height="'+ realHeight + '" \
+						style="top:' + topOffset + 'px; position: absolute; right: 15%;" \
+						src="//www.youtube.com/embed/' + embedVideoID + '?autoplay=1&start='+ startTime +'" frameborder="0"></iframe>';
+		console.log(iframeObj);
+		return iframeObj;
 	};
 	var initDefaultView = function(){
 		// destroy the drag event handler & initialize the container position
@@ -155,4 +149,35 @@ function peepTube(){
 		$('.shrinkContainerView').draggable();
 		$('#peepContainer').css({'right': '20px', 'bottom': '0px', 'top': '', 'left': ''});		
 	};
-}
+
+	//Pause the youtube video & render shrinked window start with pause time
+	var initYTShrink = function(){
+		$('#watch7-user-header').append( "<button id='shrinkMovie-btn' class=' glyphicon glyphicon-import btn btn-default'></button>" );
+
+		console.log('Testing YT API!!');
+		var ytplayer = document.getElementById("movie_player");
+		$('#shrinkMovie-btn').on('click',function(){
+			ytplayer.pauseVideo(); // Pause the video
+			var pauseTime = ytplayer.getCurrentTime(); // Get the pause time
+			pauseTime = Math.floor(pauseTime);
+			var videoID = ytplayer.getVideoUrl().split('&v=')[1]; // Getting the video ID
+
+			console.log(ytplayer.getCurrentTime());
+			console.log(videoID);
+
+			var iframeObj = iframeObjGenerator(videoID, pauseTime);
+
+			// Render the shrinked modal
+			initShrinkView();
+			$('#peepContainer').fadeIn(function(){
+				$(this).append("<button type='button' id='peepClose-btn' class='close' aria-hidden='true'>&times;</button>")
+								.append(iframeObj).find('iframe').attr({width:'360px', height: '200px'})
+								.css({top: '20px', left: '0px', 'position': 'absolute', 'z-index': '1000'});
+				// Add "close btn" event
+				$('#peepClose-btn').bind('click',function(){
+					peepTubeComponent.closeModal();
+				});				
+			});	
+		});
+	};
+};
