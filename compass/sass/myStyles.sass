@@ -1,5 +1,11 @@
 @import "compass/css3"
 
+.display-none
+	display: none
+
+#peepContainer
+	display: none
+
 .defaultContainerView
 	position: absolute
 	height: 100%
@@ -23,15 +29,6 @@
 	background: #333333
 	&:hover
 		background: #777777
-
-#peepClose-btn
-	position: absolute
-	top: -3px
-	right: 0px
-	color: white
-	font-size: 2em
-	&:hover
-		color: #222222
 
 #peepShrinkBtn
 	position: fixed
@@ -60,6 +57,24 @@
 	position: absolute
 	left: 100%
 	top: 50%
+
+@mixin shrink-view-btn()
+	position: absolute
+	top: 2px
+	color: #999999
+	&:hover
+		cursor: pointer
+		color: #222222
+
+#peepRedirect-btn
+	+shrink-view-btn()
+	right: 20px
+	font-size: 1.15em
+
+#peepClose-btn
+	+shrink-view-btn()
+	right: 0px
+	font-size: 1.2em
 
 #shrinkMovie-btn
 	//display: none

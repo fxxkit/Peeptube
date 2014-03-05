@@ -1,4 +1,14 @@
 /* line 3, ../sass/myStyles.sass */
+.display-none {
+  display: none;
+}
+
+/* line 6, ../sass/myStyles.sass */
+#peepContainer {
+  display: none;
+}
+
+/* line 9, ../sass/myStyles.sass */
 .defaultContainerView {
   position: absolute;
   height: 100%;
@@ -12,7 +22,7 @@
   cursor: pointer;
 }
 
-/* line 17, ../sass/myStyles.sass */
+/* line 23, ../sass/myStyles.sass */
 .shrinkContainerView {
   height: 230px;
   width: 360px;
@@ -21,25 +31,12 @@
   cursor: move;
   background: #333333;
 }
-/* line 24, ../sass/myStyles.sass */
+/* line 30, ../sass/myStyles.sass */
 .shrinkContainerView:hover {
   background: #777777;
 }
 
-/* line 27, ../sass/myStyles.sass */
-#peepClose-btn {
-  position: absolute;
-  top: -3px;
-  right: 0px;
-  color: white;
-  font-size: 2em;
-}
 /* line 33, ../sass/myStyles.sass */
-#peepClose-btn:hover {
-  color: #222222;
-}
-
-/* line 36, ../sass/myStyles.sass */
 #peepShrinkBtn {
   position: fixed;
   font-size: 3em;
@@ -50,7 +47,7 @@
   display: none;
 }
 
-/* line 45, ../sass/myStyles.sass */
+/* line 42, ../sass/myStyles.sass */
 .peepBtn-results {
   position: absolute;
   float: right;
@@ -58,7 +55,7 @@
   left: 0;
 }
 
-/* line 51, ../sass/myStyles.sass */
+/* line 48, ../sass/myStyles.sass */
 .peepBtn-main {
   position: absolute;
   float: right;
@@ -67,14 +64,42 @@
   background: red;
 }
 
-/* line 59, ../sass/myStyles.sass */
+/* line 56, ../sass/myStyles.sass */
 .peepShinkView {
   position: absolute;
   left: 100%;
   top: 50%;
 }
 
-/* line 64, ../sass/myStyles.sass */
+/* line 69, ../sass/myStyles.sass */
+#peepRedirect-btn {
+  position: absolute;
+  top: 2px;
+  color: #999999;
+  right: 20px;
+  font-size: 1.15em;
+}
+/* line 65, ../sass/myStyles.sass */
+#peepRedirect-btn:hover {
+  cursor: pointer;
+  color: #222222;
+}
+
+/* line 74, ../sass/myStyles.sass */
+#peepClose-btn {
+  position: absolute;
+  top: 2px;
+  color: #999999;
+  right: 0px;
+  font-size: 1.2em;
+}
+/* line 65, ../sass/myStyles.sass */
+#peepClose-btn:hover {
+  cursor: pointer;
+  color: #222222;
+}
+
+/* line 79, ../sass/myStyles.sass */
 #shrinkMovie-btn {
   margin-left: 8px;
   width: 80px;
