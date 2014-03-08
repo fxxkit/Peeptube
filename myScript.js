@@ -12,12 +12,15 @@ $(function(){
 		//prevent duplicate button append
 		if(currentURL != msg.url){
 			if(msg.url.indexOf('www.youtube.com/results') != -1){
+				console.log('add btn on search result page');
 				o_peepTube.appendBtn('search_results');
 			}
 			else if (msg.url.indexOf('http://www.youtube.com/watch') != -1){
-				o_peepTube.appendBtn('watch_video');
+				console.log('add btn on watch video page')
+				o_peepTube.appendBtn('watch_video',msg.url);
 			}
 			else if(msg.url == 'http://www.youtube.com/'){
+				console.log('add btn on watch main page')
 				o_peepTube.appendBtn('main_page');
 			} 
 			
@@ -35,9 +38,11 @@ $(function(){
 function peepTube(){
 	var peepTubeComponent = this;
 	// Public methods	
-	peepTubeComponent.appendBtn = function(page){
+	peepTubeComponent.appendBtn = function(page,url){
+    	url = typeof url !== 'undefined' ? url : '';
+
 		if (page == 'watch_video'){
-			initYTShrink();
+			initYTShrink(url);
 		}		
 		else{
 			//Add peep button
@@ -178,23 +183,21 @@ function peepTube(){
 	};
 
 	//Pause the youtube video & render shrinked window start with pause time
-	var initYTShrink = function(){
+	var initYTShrink = function(url){
 
-		//console.log('Testing YT API!!');
-		var ytplayer = document.getElementById('movie_player');
+		var videoID = url.split('v=')[1]; // Get the video ID
+		console.log(videoID);
 		//console.log(ytplayer);
 
 		// video player is AS3 or AS2
 		if($('#movie_player').is('embed')){
+			var ytplayer = document.getElementById('movie_player');
 			$('#watch7-user-header').append( "<button id='shrinkMovie-btn' class='glyphicon glyphicon-import btn btn-default'></button>" );
 			$('#shrinkMovie-btn').on('click',function(){
 				ytplayer.pauseVideo(); // Pause the video
 				var pauseTime = ytplayer.getCurrentTime(); // Get the pause time
 				pauseTime = Math.floor(pauseTime);
-				var videoID = ytplayer.getVideoUrl().split('&v=')[1]; // Get the video ID
-
 				console.log(ytplayer.getCurrentTime());
-				console.log(videoID);
 
 				var iframeObj = iframeObjGenerator(videoID, pauseTime);
 
@@ -207,6 +210,29 @@ function peepTube(){
 				});	
 			});			
 		}
-		
+		// video player is html5
+		else{
+			$('#watch7-user-header').append( "<button id='shrinkMovie-btn' class='glyphicon glyphicon-import btn btn-default'></button>" );
+			$('#shrinkMovie-btn').on('click',function(){
+				var ytplayer = $('#movie_player');
+				var pauseTime = 0;
+				if($(ytplayer).hasClass('playing-mode')){
+					$(ytplayer).find('.ytp-button-pause').click(); // pause the video if playing
+				}	
+				var currentTime_tmp = $(ytplayer).find('.ytp-time-current').html();
+				pauseTime = parseInt(currentTime_tmp.split(':')[0])*60 + parseInt(currentTime_tmp.split(':')[1])				
+				console.log(pauseTime);
+				
+				var iframeObj = iframeObjGenerator(videoID,pauseTime);
+
+				// Render the shrinked modal
+				initShrinkView();
+				$('#peepContainer').fadeIn(function(){
+					$(this).find('iframe').remove();
+					$(this).append(iframeObj).find('iframe').attr({width:'360px', height: '200px'})
+						.css({top: '20px', left: '0px', 'position': 'absolute', 'z-index': '1000'});	
+				});	
+			});			
+		}
 	};
 };

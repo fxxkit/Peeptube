@@ -1,6 +1,5 @@
 {
   "manifest_version": 2,
-
   "name": "PeepTube",
   "description": "Peeping on youtube search results",
   "version": "1.0",
@@ -11,7 +10,7 @@
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/*"],
-      "css": ["compass/stylesheets/myStyles.css","css/bootstrap.css"],
+      "css": ["compass/stylesheets/myStyles.css","css/bootstrap-modified.css"],
       "js": ["js/jquery-2.1.0.min.js","js/bootstrap.min.js","js/jquery-ui-1.10.4.custom.min.js","myScript.js"]
     }
   ],
