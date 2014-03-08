@@ -2,8 +2,6 @@ venv
 HelloWorld
 compass/.sass-cache/
 *.pyc
-*.png
-*.jpg
 *.db
 *.db3
 .DS_Store
