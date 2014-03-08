@@ -15,11 +15,11 @@ $(function(){
 				console.log('add btn on search result page');
 				o_peepTube.appendBtn('search_results');
 			}
-			else if (msg.url.indexOf('http://www.youtube.com/watch') != -1){
+			else if (msg.url.indexOf('www.youtube.com/watch') != -1){
 				console.log('add btn on watch video page')
 				o_peepTube.appendBtn('watch_video',msg.url);
 			}
-			else if(msg.url == 'http://www.youtube.com/'){
+			else if(msg.url == 'http://www.youtube.com/' || msg.url == 'https://www.youtube.com/'){
 				console.log('add btn on watch main page')
 				o_peepTube.appendBtn('main_page');
 			} 
@@ -147,10 +147,10 @@ function peepTube(){
 
 		// Setting iframe position
 		var topOffset = $(document).scrollTop() + 20; // add 20px top offset		
-		var contentAreaWidth = $('#content').width(); // Get content area width
+		var contentAreaWidth = $('body').width(); // Get content area width
 		var baseWidth = 560.0;
 		var baseHeight = 315.0;
-		var ratio = (contentAreaWidth/baseWidth) * 0.8;
+		var ratio = (contentAreaWidth/baseWidth) * 0.65;
 		var realWidth = baseWidth * ratio;
 		var realHeight = baseHeight * ratio;
 
