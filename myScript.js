@@ -49,16 +49,19 @@ function peepTube(){
 			$('.yt-lockup').each(function(idx,e){
 				var currentDOM = e;
 				var resultUrl = $(currentDOM).find('a').attr('href');
-				if (resultUrl.indexOf('/watch?v=') != -1){
-					switch(page){
-						case 'search_results':
-							$(currentDOM).before( "<button class='peepButton peepBtn-results glyphicon glyphicon-eye-open btn btn-default'></button>" );
-							break;
-						case 'main_page':
-							$(currentDOM).before( "<button class='peepButton peepBtn-main glyphicon glyphicon-eye-open btn btn-default'></button>" );
-							break;
-					}
-				}
+				//prevent duplicate button append (again)
+				if(!$(currentDOM).prev().hasClass('peepButton')){
+					if (resultUrl.indexOf('/watch?v=') != -1){
+						switch(page){
+							case 'search_results':
+								$(currentDOM).before( "<button class='peepButton peepBtn-results glyphicon glyphicon-eye-open btn btn-default'></button>" );
+								break;
+							case 'main_page':
+								$(currentDOM).before( "<button class='peepButton peepBtn-main glyphicon glyphicon-eye-open btn btn-default'></button>" );
+								break;
+						}
+					}	
+				}		
 			});			
 		}		
 	};
@@ -130,8 +133,6 @@ function peepTube(){
 		//var ytplayer = document.getElementById("YTplayer");
 		//var currentTime = ytplayer.getCurrentTime();
 		//console.log(player);
-
-
 		
 		/*var func = state == 'hide' ? 'pauseVideo' : 'playVideo';
 		var currentTime = ytplayer.contentWindow

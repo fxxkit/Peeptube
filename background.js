@@ -9,7 +9,7 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(function(e){
         //_.delay(exeScript, 2000, null, {file: "myScript.js"});
 
         var delayMsgPassHandler = _.bind(delayMsgPassing);
-        _.delay(delayMsgPassHandler,2000,historyStateURL);
+        _.delay(delayMsgPassHandler,4000,historyStateURL);
     }, 
     {url: [{hostSuffix: 'www.youtube.com'}]}
 );
