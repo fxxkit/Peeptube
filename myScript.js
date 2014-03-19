@@ -52,6 +52,7 @@ function peepTube(){
 				//prevent duplicate button append (again)
 				if(!$(currentDOM).prev().hasClass('peepButton')){
 					if (resultUrl.indexOf('/watch?v=') != -1){
+						$(currentDOM).wrap('<div class="peepRow"></div>');
 						switch(page){
 							case 'search_results':
 								$(currentDOM).before( "<button class='peepButton peepBtn-results glyphicon glyphicon-eye-open btn btn-default'></button>" );

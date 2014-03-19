@@ -47,7 +47,17 @@
   display: none;
 }
 
-/* line 42, ../sass/myStyles.sass */
+/* line 44, ../sass/myStyles.sass */
+.peepRow:hover .peepButton {
+  visibility: visible;
+}
+
+/* line 47, ../sass/myStyles.sass */
+.peepButton {
+  visibility: hidden;
+}
+
+/* line 50, ../sass/myStyles.sass */
 .peepBtn-results {
   position: absolute;
   float: right;
@@ -55,7 +65,7 @@
   left: 0;
 }
 
-/* line 48, ../sass/myStyles.sass */
+/* line 56, ../sass/myStyles.sass */
 .peepBtn-main {
   position: absolute;
   float: right;
@@ -64,14 +74,14 @@
   background: red;
 }
 
-/* line 56, ../sass/myStyles.sass */
+/* line 64, ../sass/myStyles.sass */
 .peepShinkView {
   position: absolute;
   left: 100%;
   top: 50%;
 }
 
-/* line 69, ../sass/myStyles.sass */
+/* line 77, ../sass/myStyles.sass */
 #peepRedirect-btn {
   position: absolute;
   top: 2px;
@@ -79,13 +89,13 @@
   right: 20px;
   font-size: 1.15em;
 }
-/* line 65, ../sass/myStyles.sass */
+/* line 73, ../sass/myStyles.sass */
 #peepRedirect-btn:hover {
   cursor: pointer;
   color: #222222;
 }
 
-/* line 74, ../sass/myStyles.sass */
+/* line 82, ../sass/myStyles.sass */
 #peepClose-btn {
   position: absolute;
   top: 2px;
@@ -93,13 +103,13 @@
   right: 0px;
   font-size: 1.2em;
 }
-/* line 65, ../sass/myStyles.sass */
+/* line 73, ../sass/myStyles.sass */
 #peepClose-btn:hover {
   cursor: pointer;
   color: #222222;
 }
 
-/* line 79, ../sass/myStyles.sass */
+/* line 87, ../sass/myStyles.sass */
 #shrinkMovie-btn {
   margin-left: 8px;
   width: 80px;
