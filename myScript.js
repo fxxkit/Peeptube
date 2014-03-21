@@ -32,6 +32,35 @@ $(function(){
 		}
 		currentURL = msg.url;
 	});
+
+
+	// Getting the storyboard imgs
+	var o_storyboard = new peepStoryboard();
+	var prev_videoURL = NaN;
+	$('.yt-lockup').on('mouseover',function(){
+		var $currentDOM = $(this);
+		var videoURL = $currentDOM.find('a').attr('href');
+		o_storyboard.$targetDOM = $currentDOM;
+
+		// Doing ajax only when the mouseovering video is different than before		
+		if(prev_videoURL != videoURL){
+			console.log('different video')
+			o_storyboard.getInfo(videoURL);
+		}
+		prev_videoURL = videoURL;
+	});
+
+	// Playing storyboard frames
+	$('.yt-lockup').on('mousemove',function(e){
+		o_storyboard.play(e);
+	})
+
+	// Stop playing storyboard when mouseout
+	$('.yt-lockup').on('mouseout',function(){
+		var $currentDOM = $(this);
+		o_storyboard.$targetDOM = $currentDOM;
+		o_storyboard.end();
+	});
 });
 
 // peepTube Class
@@ -103,6 +132,10 @@ function peepTube(){
 			$('#peepContainer').append(iframeObj);
 		});	
 		$('#peepShrinkBtn').fadeIn();
+	};
+
+	peepTubeComponent.peepMode = function(){
+		//Remember to coding here!!!!!!!!!!!!!
 	};
 
 	peepTubeComponent.closeModal = function(){
@@ -238,3 +271,107 @@ function peepTube(){
 		}
 	};
 };
+
+function peepStoryboard(){
+	var stbComponent = this;
+	stbComponent.imgs = [];
+	stbComponent.$targetDOM = NaN; // the mouseover ".yt-lockup" , init as NaN
+	// Current DOM infomation, init as NaN
+	var rowWidth = NaN;
+	var thumbnailWidth = NaN;
+	var thumbnailHeight = NaN;
+	// Storyboard CSS, init as NaN
+	var backgroundWidth = NaN;
+	var backgroundHeight = NaN;
+	var backgroundSize = NaN;
+	var backgroundPosition = [];
+	/*
+	@ Get storyboard imgs (by ajax) & current DOM information (rowWidth, thumbnailWidth, etc.)
+	*/
+	stbComponent.getInfo = function(url){
+		//Get storyboard imgs via ajax
+		$.get(url,function(data){
+			//console.log(data);
+
+			var videoID = url.split('watch?v=')[1];
+
+			var sigh = data.split('storyboard_spec')[1].split(',')[0].split('|')[3].split('#M$M#')[1].replace(/"/g,'');
+			
+			// So far, fix the img number as 5
+			for(i=0; i < 5; i++){
+				stbComponent.imgs[i] = "//i1.ytimg.com/sb/" + videoID + "/storyboard3_L2/M" + i + ".jpg?sigh=" + sigh;
+			}
+			console.log(stbComponent.imgs);
+		});
+
+		// Compute the information for story board
+		rowWidth = stbComponent.$targetDOM.width() - stbComponent.$targetDOM.prev().width();
+		thumbnailWidth = stbComponent.$targetDOM.find('.yt-thumb-default').width();
+		thumbnailHeight = stbComponent.$targetDOM.find('.yt-thumb-clip > img').height();
+
+		// Storyboard background CSS
+		backgroundWidth = thumbnailWidth*5;
+		backgroundHeight = thumbnailHeight*5;
+		backgroundSize = backgroundWidth + 'px ' + backgroundHeight + 'px';
+		for(i=0; i < 25; i++){
+			var x_position = -((i%5)*thumbnailWidth);
+			var y_position = -(parseInt(i/5)*thumbnailHeight);
+			backgroundPosition[i] = x_position + 'px ' + y_position + 'px';
+		}
+
+	};
+
+	/*
+	@ Start playing storyboard frames
+	@ Parameters: mouseEventObj => mouseover event object
+				  rowWidth => The width of detectable row area(".yt-lockup" - "peepButton" )
+	*/
+	stbComponent.play = function(mouseEventObj){
+		
+		var mouseOffsetX = mouseEventObj.offsetX;
+		var leftRatio = mouseOffsetX*5/rowWidth;
+		var storyboardImg = stbComponent.imgs[Math.floor(leftRatio)];
+		var positionIdx = Math.floor((leftRatio - Math.floor(leftRatio))*25);
+		console.log(positionIdx);
+		/* CSS
+			width
+			height
+			margin: 0px 1px
+			background-image: url(url)
+			background-size: width*5 height*5
+			background-position:
+		*/	
+		stbComponent.$targetDOM.find('.yt-thumb-default')
+					.css({
+						'width' : thumbnailWidth + 'px',
+						'height': thumbnailHeight + 'px',
+						'margin': '0px 1px',
+						'background-size' : backgroundSize,
+						'background-image': 'url(' + storyboardImg + ')',
+						'background-position': backgroundPosition[positionIdx]
+					});
+
+		//Hide the original thumbnail image
+		stbComponent.$targetDOM.find('.yt-thumb-clip').addClass('visibility-hidden');
+
+	};
+
+	/*
+	@ Set the css as the defult of Youtube (hide storyboard & show thumbnail)
+	@ Trigger: mouseout on ".yt-lockup"
+	*/
+	stbComponent.end = function(){
+		stbComponent.$targetDOM.find('.yt-thumb-clip').removeClass('visibility-hidden');
+		/*
+		stbComponent.$targetDOM.find('.yt-thumb-default')
+					.css({
+						'width' : '',
+						'height': '',
+						'margin': '',
+						'background-size' : '',
+						'background-image': '',
+						'background-position': ''
+					});*/
+	}
+
+}
