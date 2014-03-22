@@ -14,5 +14,5 @@
       "js": ["js/jquery-2.1.0.min.js","js/bootstrap.min.js","js/jquery-ui-1.10.4.custom.min.js","myScript.js"]
     }
   ],
-  "permissions": ["tabs", "*://www.youtube.com/*","webNavigation"]
+  "permissions": ["tabs", "*://www.youtube.com/*","*://i1.ytimg.com/*","webNavigation"]
 }

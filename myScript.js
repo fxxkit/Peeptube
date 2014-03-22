@@ -8,7 +8,6 @@ $(function(){
 	// Listen the background script msg
 	chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
 		console.log('receive msg from background scripts');
-		console.log(msg);
 		//prevent duplicate button append
 		if(currentURL != msg.url){
 			if(msg.url.indexOf('www.youtube.com/results') != -1){
@@ -31,7 +30,7 @@ $(function(){
 			});			
 		}
 		currentURL = msg.url;
-		init_peepStoryboard();
+		init_peepStoryboard(currentURL);
 	});	
 });
 
@@ -245,9 +244,10 @@ function peepTube(){
 };
 
 // Initialize function for peepStoryboard
-function init_peepStoryboard(){
+function init_peepStoryboard(currentWebPage){
 	// Getting the storyboard imgs
 	var o_storyboard = new peepStoryboard();
+	o_storyboard.currentWebPage = currentWebPage;
 	var prev_videoURL = NaN;
 	$('.yt-lockup').on('mouseover',function(){
 		var $currentDOM = $(this);
@@ -278,6 +278,7 @@ function init_peepStoryboard(){
 function peepStoryboard(){
 	var stbComponent = this;
 	stbComponent.imgs = [];
+	stbComponent.currentWebPage = NaN; // the current web url => to identify the rowWidth, init as NaN
 	stbComponent.$targetDOM = NaN; // the mouseover ".yt-lockup" , init as NaN
 	stbComponent.ajaxStatus = false; // set as true if doing ajax
 
@@ -295,32 +296,46 @@ function peepStoryboard(){
 	@ Get storyboard imgs (by ajax) & current DOM information (rowWidth, thumbnailWidth, etc.)
 	*/
 	stbComponent.getInfo = function(url){
-		console.log('stbComponent.getInfo() trigger!');
 		stbComponent.ajaxStatus = true;
 		//Get storyboard imgs via ajax
 		$.get(url,function(data){
 			//console.log(data);
 			var videoID = url.split('watch?v=')[1];			
-			// If can't extract "sigh" => the video has no storyboard
+			// If can't extract "sigh" => the video has no storyboard frames
 			try{
 				var sigh = data.split('storyboard_spec')[1].split(',')[0].split('|')[3].split('#M$M#')[1].replace(/"/g,'');
-				
 				// So far, fix the img number as 5
 				for(i=0; i < 5; i++){
 					stbComponent.imgs[i] = "//i1.ytimg.com/sb/" + videoID + "/storyboard3_L2/M" + i + ".jpg?sigh=" + sigh;
-				}				
+				}
+				// Remove the unavailable img url
+				for(i=0; i< 5; i++){
+					$.ajax({
+						url: stbComponent.imgs[i],
+						type: 'HEAD',
+						error: function(){
+							var index = stbComponent.imgs.indexOf(this.url.split(':')[1]);
+							if (index > -1)
+ 				    			stbComponent.imgs.splice(index, 1);
+						}
+					});
+				}
 			}
 			catch(err){
 				stbComponent.imgs = [];
 			}
 			
-			console.log(stbComponent.imgs);
 			// Ajax complete, set status as false
 			stbComponent.ajaxStatus = false;
 		});
 
-		// Compute the information for story board
-		rowWidth = stbComponent.$targetDOM.width() - stbComponent.$targetDOM.prev().width();
+		// Identify the available mouse playing area
+		if(stbComponent.currentWebPage.indexOf('www.youtube.com/results') != -1)
+			rowWidth = stbComponent.$targetDOM.width() - stbComponent.$targetDOM.prev().width();
+		else if(stbComponent.currentWebPage == 'http://www.youtube.com/' || stbComponent.currentWebPage == 'https://www.youtube.com/')
+			rowWidth = stbComponent.$targetDOM.width();
+
+		// Get the thumbnail size
 		thumbnailWidth = stbComponent.$targetDOM.find('.yt-thumb-default').width();
 		thumbnailHeight = stbComponent.$targetDOM.find('.yt-thumb-clip > img').height();
 
@@ -341,12 +356,10 @@ function peepStoryboard(){
 				  rowWidth => The width of detectable row area(".yt-lockup" - "peepButton" )
 	*/
 	stbComponent.play = function(mouseEventObj){
-		console.log('stbComponent.play() trigger!');
-
 		if(stbComponent.$targetDOM.prev().hasClass('peepButton') 
 			&& stbComponent.imgs.length > 0 && stbComponent.ajaxStatus == false) {
 			var mouseOffsetX = mouseEventObj.offsetX;
-			var leftRatio = mouseOffsetX*5/rowWidth;
+			var leftRatio = (mouseOffsetX*stbComponent.imgs.length)/rowWidth;
 			var storyboardImg = stbComponent.imgs[Math.floor(leftRatio)];
 			var positionIdx = Math.floor((leftRatio - Math.floor(leftRatio))*25);
 
@@ -370,8 +383,6 @@ function peepStoryboard(){
 	@ Trigger: mouseout on ".yt-lockup"
 	*/
 	stbComponent.end = function(){
-		console.log('stbComponent.end() trigger!');
 		stbComponent.$targetDOM.find('.yt-thumb-clip').removeClass('visibility-hidden');
 	}
-
 }
