@@ -245,11 +245,24 @@ function peepTube(){
 
 // Initialize function for peepStoryboard
 function init_peepStoryboard(currentWebPage){
-	// Getting the storyboard imgs
+	// Create peepStoryboard Object
 	var o_storyboard = new peepStoryboard();
 	o_storyboard.currentWebPage = currentWebPage;
+	// Storyboard for suggestion videos
+	if(currentWebPage.indexOf('www.youtube.com/watch') != -1){
+		o_storyboard.suggestionVideo = true;
+		addListner_peepStoryboard('related-list-item', o_storyboard);
+	}
+	// Storyboard for main page & searching results
+	else{
+		o_storyboard.suggestionVideo = false;
+		addListner_peepStoryboard('yt-lockup', o_storyboard);
+	}
+}
+
+function addListner_peepStoryboard(targetClassName, o_storyboard){
 	var prev_videoURL = NaN;
-	$('.yt-lockup').on('mouseover',function(){
+	$('.' + targetClassName).on('mouseover',function(){
 		var $currentDOM = $(this);
 		var videoURL = $currentDOM.find('a').attr('href');
 		o_storyboard.$targetDOM = $currentDOM;
@@ -262,12 +275,12 @@ function init_peepStoryboard(currentWebPage){
 	});
 
 	// Playing storyboard frames
-	$('.yt-lockup').on('mousemove',function(e){
+	$('.' + targetClassName).on('mousemove',function(e){
 		o_storyboard.play(e);
 	})
 
 	// Stop playing storyboard when mouseout
-	$('.yt-lockup').on('mouseout',function(){
+	$('.' + targetClassName).on('mouseout',function(){
 		var $currentDOM = $(this);
 		o_storyboard.$targetDOM = $currentDOM;
 		o_storyboard.end();
@@ -279,6 +292,7 @@ function peepStoryboard(){
 	var stbComponent = this;
 	stbComponent.imgs = [];
 	stbComponent.currentWebPage = NaN; // the current web url => to identify the rowWidth, init as NaN
+	stbComponent.suggestionVideo = false; // Set as "true" if the current page has suggestion videos
 	stbComponent.$targetDOM = NaN; // the mouseover ".yt-lockup" , init as NaN
 	stbComponent.ajaxStatus = false; // set as true if doing ajax
 
@@ -332,12 +346,16 @@ function peepStoryboard(){
 		// Identify the available mouse playing area
 		if(stbComponent.currentWebPage.indexOf('www.youtube.com/results') != -1)
 			rowWidth = stbComponent.$targetDOM.width() - stbComponent.$targetDOM.prev().width();
-		else if(stbComponent.currentWebPage == 'http://www.youtube.com/' || stbComponent.currentWebPage == 'https://www.youtube.com/')
+		else
 			rowWidth = stbComponent.$targetDOM.width();
 
 		// Get the thumbnail size
 		thumbnailWidth = stbComponent.$targetDOM.find('.yt-thumb-default').width();
-		thumbnailHeight = stbComponent.$targetDOM.find('.yt-thumb-clip > img').height();
+		if(stbComponent.suggestionVideo == false)
+			thumbnailHeight = stbComponent.$targetDOM.find('.yt-thumb-clip > img').height();
+		else
+			thumbnailHeight = stbComponent.$targetDOM.height();
+
 
 		// Storyboard background CSS
 		backgroundWidth = thumbnailWidth*5;
@@ -356,7 +374,7 @@ function peepStoryboard(){
 				  rowWidth => The width of detectable row area(".yt-lockup" - "peepButton" )
 	*/
 	stbComponent.play = function(mouseEventObj){
-		if(stbComponent.$targetDOM.prev().hasClass('peepButton') 
+		if((stbComponent.$targetDOM.prev().hasClass('peepButton') || stbComponent.suggestionVideo == true)
 			&& stbComponent.imgs.length > 0 && stbComponent.ajaxStatus == false) {
 			var mouseOffsetX = mouseEventObj.offsetX;
 			var leftRatio = (mouseOffsetX*stbComponent.imgs.length)/rowWidth;
