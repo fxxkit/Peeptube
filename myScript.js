@@ -84,8 +84,10 @@ function peepTube(){
 			});
 		//Create "redirect btn"
 		$('#peepContainer').append("<button id='peepRedirect-btn' class='glyphicon glyphicon-plus'></button>");			
-		$('#peepRedirect-btn').on('click',function(){
-				peepTubeComponent.redirectPage();
+		$('#peepRedirect-btn').on('click',function(event){
+				//peepTubeComponent.redirectPage();
+				event.stopPropagation(); // prevent click #peepContainer to close modal
+				peepTubeComponent.peepMode();
 			});
 		$('#content').before("<button id='peepShrinkBtn' class='glyphicon glyphicon-import btn btn-default'></button>");
 	};
@@ -106,7 +108,32 @@ function peepTube(){
 	};
 
 	peepTubeComponent.peepMode = function(){
-		//Remember to coding here!!!!!!!!!!!!!
+		$('body').css({"overflow":'hidden'});
+
+		// Setting iframe position
+		var topOffset = $(document).scrollTop() + 20; // add 20px top offset		
+		var contentAreaWidth = $('body').width(); // Get content area width
+		var baseWidth = 560.0;
+		var baseHeight = 315.0;
+		var ratio = (contentAreaWidth/baseWidth) * 0.65;
+		var realWidth = baseWidth * ratio;
+		var realHeight = baseHeight * ratio;		
+
+		// destroy the drag event handler & initialize the container position
+		$('.shrinkContainerView').draggable('destroy');
+		$('#peepContainer').css({'top': '0px', 'left': '0px'})
+						.find('iframe').attr({width: realWidth, height: realHeight})
+										.css({top: topOffset, position:'absolute', right: '15%',left: ''});		
+
+		// change class
+		$('#peepContainer').removeClass('shrinkContainerView').addClass('defaultContainerView');
+		
+		// Show shrinkBtn					
+		$('#peepShrinkBtn').fadeIn();
+		// Add "shrink peep" button event
+		$('#peepShrinkBtn').on('click',function(){
+			peepTubeComponent.shinkPeepView();
+		});		
 	};
 
 	peepTubeComponent.closeModal = function(){
@@ -123,27 +150,13 @@ function peepTube(){
 						.css({top: '20px', left: '0px', 'position': 'absolute', 'z-index': '1000'});
 		$('body').css({"overflow":'auto'});
 		$('#peepShrinkBtn').fadeOut();
-
 	};
 
-	peepTubeComponent.dragPeepView = function(xPosition, yPosition){
-		$('#peepContainer').css({'right': yPosition});
-	};
-
+	// no use anymore
 	peepTubeComponent.redirectPage = function(){
 		var videoID = $('#YTplayer').attr('src').split('/v/')[1].split('?')[0];
 		peepTubeComponent.closeModal();
- 		console.log(videoID);
-		
-		//var ytplayer = document.getElementById("YTplayer");
-		//var currentTime = ytplayer.getCurrentTime();
-		//console.log(player);
-		
-		/*var func = state == 'hide' ? 'pauseVideo' : 'playVideo';
-		var currentTime = ytplayer.contentWindow
-		.postMessage(JSON.stringify({ "event": "command", "func": "pauseVideo", "args": ''}), "*");
-		console.log(currentTime);*/
-		
+ 		console.log(videoID);		
 		window.location = 'http://www.youtube.com/watch?v=' + videoID;
 	};
 
