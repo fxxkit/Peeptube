@@ -31,36 +31,8 @@ $(function(){
 			});			
 		}
 		currentURL = msg.url;
-	});
-
-
-	// Getting the storyboard imgs
-	var o_storyboard = new peepStoryboard();
-	var prev_videoURL = NaN;
-	$('.yt-lockup').on('mouseover',function(){
-		var $currentDOM = $(this);
-		var videoURL = $currentDOM.find('a').attr('href');
-		o_storyboard.$targetDOM = $currentDOM;
-
-		// Doing ajax only when the mouseovering video is different than before		
-		if(prev_videoURL != videoURL){
-			console.log('different video')
-			o_storyboard.getInfo(videoURL);
-		}
-		prev_videoURL = videoURL;
-	});
-
-	// Playing storyboard frames
-	$('.yt-lockup').on('mousemove',function(e){
-		o_storyboard.play(e);
-	})
-
-	// Stop playing storyboard when mouseout
-	$('.yt-lockup').on('mouseout',function(){
-		var $currentDOM = $(this);
-		o_storyboard.$targetDOM = $currentDOM;
-		o_storyboard.end();
-	});
+		init_peepStoryboard();
+	});	
 });
 
 // peepTube Class
@@ -272,14 +244,48 @@ function peepTube(){
 	};
 };
 
+// Initialize function for peepStoryboard
+function init_peepStoryboard(){
+	// Getting the storyboard imgs
+	var o_storyboard = new peepStoryboard();
+	var prev_videoURL = NaN;
+	$('.yt-lockup').on('mouseover',function(){
+		var $currentDOM = $(this);
+		var videoURL = $currentDOM.find('a').attr('href');
+		o_storyboard.$targetDOM = $currentDOM;
+
+		// Doing ajax only when the mouseovering video is different than before		
+		if(prev_videoURL != videoURL){
+			o_storyboard.getInfo(videoURL);
+		}
+		prev_videoURL = videoURL;
+	});
+
+	// Playing storyboard frames
+	$('.yt-lockup').on('mousemove',function(e){
+		o_storyboard.play(e);
+	})
+
+	// Stop playing storyboard when mouseout
+	$('.yt-lockup').on('mouseout',function(){
+		var $currentDOM = $(this);
+		o_storyboard.$targetDOM = $currentDOM;
+		o_storyboard.end();
+	});	
+}
+
+// peepStoryboard Class
 function peepStoryboard(){
 	var stbComponent = this;
 	stbComponent.imgs = [];
 	stbComponent.$targetDOM = NaN; // the mouseover ".yt-lockup" , init as NaN
+	stbComponent.ajaxStatus = false; // set as true if doing ajax
+
 	// Current DOM infomation, init as NaN
 	var rowWidth = NaN;
 	var thumbnailWidth = NaN;
 	var thumbnailHeight = NaN;
+	
 	// Storyboard CSS, init as NaN
 	var backgroundWidth = NaN;
 	var backgroundHeight = NaN;
@@ -289,19 +295,28 @@ function peepStoryboard(){
 	@ Get storyboard imgs (by ajax) & current DOM information (rowWidth, thumbnailWidth, etc.)
 	*/
 	stbComponent.getInfo = function(url){
+		console.log('stbComponent.getInfo() trigger!');
+		stbComponent.ajaxStatus = true;
 		//Get storyboard imgs via ajax
 		$.get(url,function(data){
 			//console.log(data);
-
-			var videoID = url.split('watch?v=')[1];
-
-			var sigh = data.split('storyboard_spec')[1].split(',')[0].split('|')[3].split('#M$M#')[1].replace(/"/g,'');
-			
-			// So far, fix the img number as 5
-			for(i=0; i < 5; i++){
-				stbComponent.imgs[i] = "//i1.ytimg.com/sb/" + videoID + "/storyboard3_L2/M" + i + ".jpg?sigh=" + sigh;
+			var videoID = url.split('watch?v=')[1];			
+			// If can't extract "sigh" => the video has no storyboard
+			try{
+				var sigh = data.split('storyboard_spec')[1].split(',')[0].split('|')[3].split('#M$M#')[1].replace(/"/g,'');
+				
+				// So far, fix the img number as 5
+				for(i=0; i < 5; i++){
+					stbComponent.imgs[i] = "//i1.ytimg.com/sb/" + videoID + "/storyboard3_L2/M" + i + ".jpg?sigh=" + sigh;
+				}				
 			}
+			catch(err){
+				stbComponent.imgs = [];
+			}
+			
 			console.log(stbComponent.imgs);
+			// Ajax complete, set status as false
+			stbComponent.ajaxStatus = false;
 		});
 
 		// Compute the information for story board
@@ -318,7 +333,6 @@ function peepStoryboard(){
 			var y_position = -(parseInt(i/5)*thumbnailHeight);
 			backgroundPosition[i] = x_position + 'px ' + y_position + 'px';
 		}
-
 	};
 
 	/*
@@ -327,33 +341,28 @@ function peepStoryboard(){
 				  rowWidth => The width of detectable row area(".yt-lockup" - "peepButton" )
 	*/
 	stbComponent.play = function(mouseEventObj){
-		
-		var mouseOffsetX = mouseEventObj.offsetX;
-		var leftRatio = mouseOffsetX*5/rowWidth;
-		var storyboardImg = stbComponent.imgs[Math.floor(leftRatio)];
-		var positionIdx = Math.floor((leftRatio - Math.floor(leftRatio))*25);
-		console.log(positionIdx);
-		/* CSS
-			width
-			height
-			margin: 0px 1px
-			background-image: url(url)
-			background-size: width*5 height*5
-			background-position:
-		*/	
-		stbComponent.$targetDOM.find('.yt-thumb-default')
-					.css({
-						'width' : thumbnailWidth + 'px',
-						'height': thumbnailHeight + 'px',
-						'margin': '0px 1px',
-						'background-size' : backgroundSize,
-						'background-image': 'url(' + storyboardImg + ')',
-						'background-position': backgroundPosition[positionIdx]
-					});
+		console.log('stbComponent.play() trigger!');
 
-		//Hide the original thumbnail image
-		stbComponent.$targetDOM.find('.yt-thumb-clip').addClass('visibility-hidden');
+		if(stbComponent.$targetDOM.prev().hasClass('peepButton') 
+			&& stbComponent.imgs.length > 0 && stbComponent.ajaxStatus == false) {
+			var mouseOffsetX = mouseEventObj.offsetX;
+			var leftRatio = mouseOffsetX*5/rowWidth;
+			var storyboardImg = stbComponent.imgs[Math.floor(leftRatio)];
+			var positionIdx = Math.floor((leftRatio - Math.floor(leftRatio))*25);
 
+			// Setting thumbnail CSS to show storyboard
+			stbComponent.$targetDOM.find('.yt-thumb-default')
+				.css({
+					'width' : thumbnailWidth + 'px',
+					'height': thumbnailHeight + 'px',
+					'margin': '0px 1px',
+					'background-size' : backgroundSize,
+					'background-image': 'url(' + storyboardImg + ')',
+					'background-position': backgroundPosition[positionIdx]
+				});
+			//Hide the original thumbnail image
+			stbComponent.$targetDOM.find('.yt-thumb-clip').addClass('visibility-hidden');
+		}
 	};
 
 	/*
@@ -361,17 +370,8 @@ function peepStoryboard(){
 	@ Trigger: mouseout on ".yt-lockup"
 	*/
 	stbComponent.end = function(){
+		console.log('stbComponent.end() trigger!');
 		stbComponent.$targetDOM.find('.yt-thumb-clip').removeClass('visibility-hidden');
-		/*
-		stbComponent.$targetDOM.find('.yt-thumb-default')
-					.css({
-						'width' : '',
-						'height': '',
-						'margin': '',
-						'background-size' : '',
-						'background-image': '',
-						'background-position': ''
-					});*/
 	}
 
 }
