@@ -323,7 +323,7 @@ function peepStoryboard(){
 	@ Get storyboard imgs (by ajax) & current DOM information (rowWidth, thumbnailWidth, etc.)
 	*/
 	stbComponent.getInfo = function(url){
-		stbComponent.ajaxStatus = true;
+		stbComponent.ajaxStatus = true; // Ajax start, set status as true
 		//Get storyboard imgs via ajax
 		$.get(url,function(data){
 			//console.log(data);
@@ -351,9 +351,7 @@ function peepStoryboard(){
 			catch(err){
 				stbComponent.imgs = [];
 			}
-			
-			// Ajax complete, set status as false
-			stbComponent.ajaxStatus = false;
+			stbComponent.ajaxStatus = false; // Ajax complete, set status as false
 		});
 
 		// Identify the available mouse playing area
