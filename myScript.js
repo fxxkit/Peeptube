@@ -1,4 +1,5 @@
 $(function(){
+//$(window).load(function(){	
 	var o_peepTube = new peepTube();
 	// initialize the content modal
 	console.log('initialize the modal')

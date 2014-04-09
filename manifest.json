@@ -1,9 +1,14 @@
 {
   "manifest_version": 2,
   "name": "PeepTube",
-  "description": "Peeping on youtube search results",
+  "description": "An useful preview tool for YouTube",
   "version": "1.0",
-   "background": {
+  "icons": {
+    "128": "icon128.png",
+    "16": "icon16.png",
+    "48": "icon48.png"
+    },
+  "background": {
       "persistent":false,
       "scripts": ["background.js","js/underscore-min.js"]
     }, 
