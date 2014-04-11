@@ -1,13 +1,17 @@
-$(document).ready(onReady);
-
-
-function onReady() {
-	events();
-}
-
 function events() {
-	$('.nav').find('li').click(function(e){
+	'use strict';
+	$('.nav').find('li').click(function(){
 		$(this).siblings().removeClass('active');
 		$(this).addClass('active');
 	});
 }
+
+
+function onReady() {
+	'use strict';
+	events();
+}
+
+
+
+$(document).ready(onReady);
