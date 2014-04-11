@@ -1,7 +1,7 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 
 // bower:scss
-@import '../../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss';
+@import '../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss';
 
 // endbower
 
@@ -104,12 +104,9 @@ body {
 
 
 #banner {
-    // background: #c93d37;
     background: #444;
     color: white; 
     text-align: center;
-
-    // padding: 48px 0;
 
     p {
         margin: 32px 0;
@@ -126,6 +123,41 @@ body {
         color: #eee;
     }
 }
+
+#screenshots {
+    background: #444;
+    color: white; 
+    .nav-wrap {
+        text-align: center;
+        nav {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            &:hover {
+                background: rgba(238, 238, 238, 0.57);
+            }
+
+            &:active, &.selected, &.selected:hover {
+
+                background: #4686f5;
+            }            
+        }
+    }
+    .img-wrap {
+        .shot-wrap {
+            width: 640px;
+            height: 400px;
+            margin: 0 auto;
+        }
+    }
+
+
+}
+
+
 section {
     padding: 48px 0;
 
