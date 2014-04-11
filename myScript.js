@@ -44,6 +44,21 @@ function peepTube(){
 
 		if (page == 'watch_video'){
 			initYTShrink(url);
+			$('.related-list-item').each(function(idx,e){
+				var currentDOM = e;
+				var resultUrl = $(currentDOM).find('a').attr('href');				
+				if(!$(currentDOM).prev().hasClass('peepButton')){
+					if (resultUrl.indexOf('/watch?v=') != -1){
+						$(currentDOM).wrap('<div class="peepRow"></div>');
+						$(currentDOM).before( "<button class='peepButton peepBtn-related glyphicon glyphicon-eye-open btn btn-default'></button>" );
+					}
+				}
+			});
+			//Pause the Youtube video if peep suggestion video
+			$('.peepBtn-related').on('click',function(){
+				console.log('click suggestion video!');
+				pauseYTPlayer();
+			});			
 		}		
 		else{
 			//Add peep button
@@ -90,7 +105,7 @@ function peepTube(){
 				event.stopPropagation(); // prevent click #peepContainer to close modal
 				peepTubeComponent.peepMode();
 			});
-		$('#content').before("<button id='peepShrinkBtn' class='glyphicon glyphicon-import btn btn-default'></button>");
+		$('#content').before("<button id='peepShrinkBtn' class='glyphicon glyphicon-import btn btn-default'></button>");		
 	};
 
 	peepTubeComponent.renderModal = function(clickedBtn){
@@ -253,6 +268,20 @@ function peepTube(){
 						.css({top: '20px', left: '0px', 'position': 'absolute', 'z-index': '1000'});	
 				});	
 			});			
+		}
+	};
+
+	// Pause the video in Youtube
+	var pauseYTPlayer = function(){
+		if($('#movie_player').is('embed')){
+			var ytplayer = document.getElementById('movie_player');
+			ytplayer.pauseVideo(); // Pause the video
+		}
+		else{
+			var ytplayer = $('#movie_player');
+			if($(ytplayer).hasClass('playing-mode')){
+				$(ytplayer).find('.ytp-button-pause').click(); // pause the video if playing
+			}
 		}
 	};
 };
