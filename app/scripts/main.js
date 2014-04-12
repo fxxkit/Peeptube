@@ -28,17 +28,15 @@ function events() {
 		var current = navs.index( $('nav.selected') );
 
 		if( $(this).hasClass('arrow-left') ){ // -
-
-			ith = current == 0 ? -1 : current - 1;
+			ith = current === 0 ? -1 : current - 1;
 
 		}else if( $(this).hasClass('arrow-right') ){ // +
-
-			ith = current == max ? -1 : current + 1;
+			ith = current === max ? -1 : current + 1;
 		}else {
 			return false;
 		}
 		if(ith >= 0){
-			navs.eq(ith).click();	
+			navs.eq(ith).click();
 		}
 	});
 }
