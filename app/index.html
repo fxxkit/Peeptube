@@ -5,7 +5,8 @@
         <title>Peeptube</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
-        <link rel="shortcut icon" href="/favicon.ico">
+        <!-- <link rel="shortcut icon" href="/favicon.ico"> -->
+        <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
         <!-- build:css styles/vendor.css -->
         <!-- bower:css -->
@@ -94,14 +95,11 @@
             </section>
 
             <section class="row" id="screenshots">
-                <div class="col-lg-12 col-md-12 nav-wrap">
-                    <nav class="selected" value="1"></nav>
-                    <nav value="2"></nav>
-                    <nav value="3"></nav>
-                    <nav value="4"></nav>
-                </div>
+
                 <div class="col-lg-12 col-md-12 img-wrap">
-                    <div class="shot-wrap show">
+                    <div class="arrow arrow-left"><</div>
+
+                    <div class="shot-wrap">
                         <img src="images/1.jpg" />
                     </div>
                     <div class="shot-wrap hide">
@@ -113,7 +111,15 @@
                     <div class="shot-wrap hide">
                         <img src="images/4.jpg" />
                     </div>
+
+                    <div class="arrow arrow-right">></div>
                 </div>
+                <div class="col-lg-12 col-md-12 nav-wrap">
+                    <nav class="selected" value="1"></nav>
+                    <nav value="2"></nav>
+                    <nav value="3"></nav>
+                    <nav value="4"></nav>
+                </div>                
             </section>
 
 

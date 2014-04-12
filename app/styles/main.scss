@@ -2,8 +2,11 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/
 
 // bower:scss
 @import '../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss';
-
 // endbower
+
+
+$theme-dark: #333;
+$theme-brite: white;
 
 .browsehappy {
     margin: 0.2em 0;
@@ -34,6 +37,8 @@ body {
     min-height: 320px;
 }
 
+
+
 /* Custom page header */
 .header {
     // border-bottom: 1px solid #e5e5e5;
@@ -52,7 +57,7 @@ body {
     .nav {
         li > a {
             border-radius: 0;
-            color: #444;
+            color: $theme-dark;
             &:hover {
                 border-radius: 0;
 
@@ -61,9 +66,9 @@ body {
         .active > a {
             // border-radius: 0;
             color: white;
-            background: #444;
+            background: $theme-dark;
             &:hover {
-                background: #444;
+                background: $theme-dark;
                 color: white;
             }
         }
@@ -104,10 +109,10 @@ body {
 
 
 #banner {
-    background: #444;
+    background: $theme-dark;
     color: white; 
     text-align: center;
-
+    padding: 24px 0 24px 0;
     p {
         margin: 32px 0;
     }
@@ -125,10 +130,12 @@ body {
 }
 
 #screenshots {
-    background: #444;
+    background: #262626;
     color: white; 
     .nav-wrap {
         text-align: center;
+        padding: 12px 0 12px 0;
+        
         nav {
             display: inline-block;
             width: 10px;
@@ -136,21 +143,52 @@ body {
             background: white;
             border-radius: 10px;
             cursor: pointer;
+            box-shadow: inset 1px 1px 1px rgba(85, 85, 85, 0.71);
+
             &:hover {
+
                 background: rgba(238, 238, 238, 0.57);
             }
 
             &:active, &.selected, &.selected:hover {
-
-                background: #4686f5;
+                background: #d9524f;
+                // background: #4686f5;
             }            
         }
     }
     .img-wrap {
+        text-align: center;
+
+        .arrow {
+            font-size: 32px;
+            font-family: serif;
+            background: #111;
+            width: 72px;
+            height: 72px;
+            line-height: 70px;
+            text-align: center;
+            vertical-align: middle;
+            color: #888;
+            border-radius: 36px;
+            &:hover {
+                background: #d9524f;
+                color: #eee;
+                cursor: pointer;
+            }
+        }
+        .arrow-left {
+            margin-right: 32px;
+        }
+        .arrow-right {
+            margin-left: 32px;
+        }        
+        .shot-wrap, .arrow {
+            display: inline-block;
+        }
         .shot-wrap {
             width: 640px;
             height: 400px;
-            margin: 0 auto;
+            // margin: 0 auto;
         }
     }
 
@@ -219,7 +257,7 @@ section {
                     min-height: 24px;
                     .font-img {
                         font-size: 64px;
-                        color: #444;
+                        color: $theme-dark;
                         margin: 16px 0 16px 0;
                     }                    
                 }
