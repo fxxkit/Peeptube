@@ -183,13 +183,9 @@ section {
     #features {
         text-align: center;
         margin: 24px 0;
-        // margin: 24px 0;
         .feature-wrap {
             width: 256px;
-            // max-width: 256px;
-            // min-width: 256px;
             height: 310px;
-            // background: #eee;
             display:inline-block;
             padding: 10px;
             margin: 10px;
@@ -197,12 +193,15 @@ section {
             border: 1px dashed #aaa;
             border-radius: 3px;
 
+            &:hover {
+                box-shadow: inset 1px 1px 10px #D6D4D4;
+            }
+
             .feature { 
                 width: 200px;
                 height: 290px;
                 top: 10px;
                 margin: 0 auto;
-                // background: #fff;
 
                 .feature-name, .feature-img, .feature-description {
                     width: 100%;
@@ -211,21 +210,20 @@ section {
                 .feature-name {
                     
                     min-height: 40px;
-                    font-size: 18px;
+                    font-size: 19px;
                     line-height: 40px;
                     font-weight: 500;
-                    // color: #444;
                     color: #d9534f;
-                    // color: #white;
                 }
                 .feature-img {
                     min-height: 24px;
-                    // background: #aaa;
+                    .font-img {
+                        font-size: 64px;
+                        color: #444;
+                        margin: 16px 0 16px 0;
+                    }                    
                 }
                 .feature-description {
-                    max-height: 100%;
-                    min-height: 80px;
-                    // background: #ddd;
                     text-align: left;
                     padding-top: 5px;
                 }                                
