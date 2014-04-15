@@ -11,14 +11,16 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
 	if(currentURL != msg.url){
 		if(msg.url.indexOf('www.youtube.com/results') != -1){
 			console.log('add btn on search result page');
+			$('#movie_player').remove(); // prevent voice keep play (Youtube bug!)
 			o_peepTube.appendBtn('search_results');
 		}
 		else if (msg.url.indexOf('www.youtube.com/watch') != -1){
-			console.log('add btn on watch video page')
+			console.log('add btn on watch video page');
 			o_peepTube.appendBtn('watch_video',msg.url);
 		}
 		else if(msg.url == 'http://www.youtube.com/' || msg.url == 'https://www.youtube.com/'){
-			console.log('add btn on watch main page')
+			console.log('add btn on watch main page');
+			$('#movie_player').remove(); // prevent voice keep play (Youtube bug!)
 			o_peepTube.appendBtn('main_page');
 		} 
 		
