@@ -3,7 +3,7 @@ var o_peepTube = new peepTube();
 console.log('initialize the modal')
 o_peepTube.initModal();
 var currentURL = '';
-console.log('after the initialize');
+
 // Listen the background script msg
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
 	console.log('receive msg from background scripts');
@@ -32,6 +32,7 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
 	init_peepStoryboard(currentURL);
 });	
 
+
 // peepTube Class
 function peepTube(){
 	var peepTubeComponent = this;
@@ -46,7 +47,7 @@ function peepTube(){
 				var resultUrl = $(currentDOM).find('a').attr('href');				
 				if(!$(currentDOM).prev().hasClass('peepButton')){
 					if (resultUrl.indexOf('/watch?v=') != -1){
-						$(currentDOM).wrap('<div class="peepRow"></div>');
+						$(currentDOM).wrap('<div class="peepRow peepRow-related"></div>');
 						$(currentDOM).before( "<button class='peepButton peepBtn-related glyphicon glyphicon-eye-open btn btn-default'></button>" );
 					}
 				}
@@ -419,11 +420,12 @@ function peepStoryboard(){
 			var storyboardImg = stbComponent.imgs[Math.floor(leftRatio)];
 			var positionIdx = Math.floor((leftRatio - Math.floor(leftRatio))*25);
 
+			console.log('width: ' + thumbnailWidth + "|| height: " + thumbnailHeight);
+
 			// Setting thumbnail CSS to show storyboard
 			stbComponent.$targetDOM.find('.yt-thumb-default')
 				.css({
 					'width' : thumbnailWidth + 'px',
-					'height': thumbnailHeight + 'px',
 					'margin': '0px 1px',
 					'background-size' : backgroundSize,
 					'background-image': 'url(' + storyboardImg + ')',
