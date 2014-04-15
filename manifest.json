@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "PeepTube",
   "description": "An useful preview tool for YouTube",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "icons": {
     "128": "icon128.png",
     "16": "icon16.png",
@@ -15,7 +15,7 @@
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/*"],
-      "css": ["compass/stylesheets/myStyles.css","css/bootstrap-modified.css"],
+      "css": ["compass/stylesheets/myStyles.css","css/bootstrap-btn.css"],
       "js": ["js/jquery-2.1.0.min.js","js/bootstrap.min.js","js/jquery-ui-1.10.4.custom.min.js","myScript.js"]
     }
   ],

@@ -1,39 +1,36 @@
-$(function(){
-//$(window).load(function(){	
-	var o_peepTube = new peepTube();
-	// initialize the content modal
-	console.log('initialize the modal')
-	o_peepTube.initModal();
-	var currentURL = '';
-
-	// Listen the background script msg
-	chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
-		console.log('receive msg from background scripts');
-		//prevent duplicate button append
-		if(currentURL != msg.url){
-			if(msg.url.indexOf('www.youtube.com/results') != -1){
-				console.log('add btn on search result page');
-				o_peepTube.appendBtn('search_results');
-			}
-			else if (msg.url.indexOf('www.youtube.com/watch') != -1){
-				console.log('add btn on watch video page')
-				o_peepTube.appendBtn('watch_video',msg.url);
-			}
-			else if(msg.url == 'http://www.youtube.com/' || msg.url == 'https://www.youtube.com/'){
-				console.log('add btn on watch main page')
-				o_peepTube.appendBtn('main_page');
-			} 
-			
-			// Add "load modal" button event 
-			$('.peepButton').on('click',function(){		
-				var clickedBtn = this;
-				o_peepTube.renderModal(clickedBtn);
-			});			
+var o_peepTube = new peepTube();
+// initialize the content modal
+console.log('initialize the modal')
+o_peepTube.initModal();
+var currentURL = '';
+console.log('after the initialize');
+// Listen the background script msg
+chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
+	console.log('receive msg from background scripts');
+	//prevent duplicate button append
+	if(currentURL != msg.url){
+		if(msg.url.indexOf('www.youtube.com/results') != -1){
+			console.log('add btn on search result page');
+			o_peepTube.appendBtn('search_results');
 		}
-		currentURL = msg.url;
-		init_peepStoryboard(currentURL);
-	});	
-});
+		else if (msg.url.indexOf('www.youtube.com/watch') != -1){
+			console.log('add btn on watch video page')
+			o_peepTube.appendBtn('watch_video',msg.url);
+		}
+		else if(msg.url == 'http://www.youtube.com/' || msg.url == 'https://www.youtube.com/'){
+			console.log('add btn on watch main page')
+			o_peepTube.appendBtn('main_page');
+		} 
+		
+		// Add "load modal" button event 
+		$('.peepButton').on('click',function(){		
+			var clickedBtn = this;
+			o_peepTube.renderModal(clickedBtn);
+		});			
+	}
+	currentURL = msg.url;
+	init_peepStoryboard(currentURL);
+});	
 
 // peepTube Class
 function peepTube(){
