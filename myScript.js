@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
 	if(currentURL != msg.url){
 		if(msg.url.indexOf('www.youtube.com/results') != -1){
 			console.log('add btn on search result page');
-			$('#movie_player').remove(); // prevent voice keep play (Youtube bug!)
+			o_peepTube.pauseYTPlayer();// prevent voice keep play (Youtube bug!)
 			o_peepTube.appendBtn('search_results');
 		}
 		else if (msg.url.indexOf('www.youtube.com/watch') != -1){
@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
 		}
 		else if(msg.url == 'http://www.youtube.com/' || msg.url == 'https://www.youtube.com/'){
 			console.log('add btn on watch main page');
-			$('#movie_player').remove(); // prevent voice keep play (Youtube bug!)
+			o_peepTube.pauseYTPlayer(); // prevent voice keep play (Youtube bug!)
 			o_peepTube.appendBtn('main_page');
 		} 
 		
@@ -57,7 +57,7 @@ function peepTube(){
 			//Pause the Youtube video if peep suggestion video
 			$('.peepBtn-related').on('click',function(){
 				console.log('click suggestion video!');
-				pauseYTPlayer();
+				peepTubeComponent.pauseYTPlayer();
 			});			
 		}		
 		else{
@@ -272,7 +272,7 @@ function peepTube(){
 	};
 
 	// Pause the video in Youtube
-	var pauseYTPlayer = function(){
+	peepTubeComponent.pauseYTPlayer = function(){
 		if($('#movie_player').is('embed')){
 			var ytplayer = document.getElementById('movie_player');
 			ytplayer.pauseVideo(); // Pause the video
