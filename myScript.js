@@ -105,6 +105,7 @@ function peepTube(){
 				event.stopPropagation(); // prevent click #peepContainer to close modal
 				peepTubeComponent.peepMode();
 			});
+		//Create shrink btn
 		$('#content').before("<button id='peepShrinkBtn' class='glyphicon glyphicon-import btn btn-default'></button>");		
 	};
 
@@ -127,7 +128,7 @@ function peepTube(){
 		$('body').css({"overflow":'hidden'});
 
 		// Setting iframe position
-		var topOffset = $(document).scrollTop() + 20; // add 20px top offset		
+		var topOffset = $(document).scrollTop() + 120; // add 20px top offset		
 		var contentAreaWidth = $('body').width(); // Get content area width
 		var baseWidth = 560.0;
 		var baseHeight = 315.0;
@@ -181,7 +182,7 @@ function peepTube(){
     	startTime = typeof startTime !== 'undefined' ? startTime : 0;
 
 		// Setting iframe position
-		var topOffset = $(document).scrollTop() + 20; // add 20px top offset		
+		var topOffset = $(document).scrollTop() + 120; // add 20px top offset		
 		var contentAreaWidth = $('body').width(); // Get content area width
 		var baseWidth = 560.0;
 		var baseHeight = 315.0;
