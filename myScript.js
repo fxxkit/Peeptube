@@ -362,6 +362,7 @@ function peepStoryboard(){
 			// If can't extract "sigh" => the video has no storyboard frames
 			try{
 				var sigh = data.split('storyboard_spec')[1].split(',')[0].split('|')[3].split('#M$M#')[1].replace(/"/g,'');
+				//console.log(sigh);
 				// So far, fix the img number as 5
 				for(i=0; i < 5; i++){
 					stbComponent.imgs[i] = "//i1.ytimg.com/sb/" + videoID + "/storyboard3_L2/M" + i + ".jpg?sigh=" + sigh;
@@ -391,12 +392,20 @@ function peepStoryboard(){
 		else
 			rowWidth = stbComponent.$targetDOM.width();
 
-		// Get the thumbnail size
-		thumbnailWidth = stbComponent.$targetDOM.find('.yt-thumb-default').width();
-		if(stbComponent.suggestionVideo == false)
+		// Get the thumbnail size 
+		if(stbComponent.suggestionVideo == false){
 			thumbnailHeight = stbComponent.$targetDOM.find('.yt-thumb-clip > img').height();
-		else
+			thumbnailWidth = stbComponent.$targetDOM.find('.yt-thumb-default').width();
+		}
+		else{
 			thumbnailHeight = stbComponent.$targetDOM.height();
+			thumbnailWidth = stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap').width();
+		}
+
+		//console.log('===================');
+		//console.log('thumbnailWidth: ' + thumbnailWidth);
+		//console.log('thumbnailHeight: ' + thumbnailHeight);
+		//console.log('===================');
 
 
 		// Storyboard background CSS
@@ -423,19 +432,33 @@ function peepStoryboard(){
 			var storyboardImg = stbComponent.imgs[Math.floor(leftRatio)];
 			var positionIdx = Math.floor((leftRatio - Math.floor(leftRatio))*25);
 
-			console.log('width: ' + thumbnailWidth + "|| height: " + thumbnailHeight);
-
-			// Setting thumbnail CSS to show storyboard
-			stbComponent.$targetDOM.find('.yt-thumb-default')
-				.css({
-					'width' : thumbnailWidth + 'px',
-					'margin': '0px 1px',
-					'background-size' : backgroundSize,
-					'background-image': 'url(' + storyboardImg + ')',
-					'background-position': backgroundPosition[positionIdx]
-				});
-			//Hide the original thumbnail image
-			stbComponent.$targetDOM.find('.yt-thumb-clip').addClass('visibility-hidden');
+			
+			//console.log('width: ' + thumbnailWidth + "|| height: " + thumbnailHeight);
+			if(stbComponent.suggestionVideo == true){
+				stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap')
+					.css({
+						'width' : thumbnailWidth + 'px',
+						'margin': '0px 1px',
+						'background-size' : backgroundSize,
+						'background-image': 'url(' + storyboardImg + ')',
+						'background-position': backgroundPosition[positionIdx]
+					});
+				//Hide the original thumbnail image
+				stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap').find('img').addClass('visibility-hidden');
+			}
+			else{
+				stbComponent.$targetDOM.find('.yt-thumb-default')
+					.css({
+						'width' : thumbnailWidth + 'px',
+						'margin': '0px 1px',
+						'background-size' : backgroundSize,
+						'background-image': 'url(' + storyboardImg + ')',
+						'background-position': backgroundPosition[positionIdx]
+					});	
+				//Hide the original thumbnail image
+				stbComponent.$targetDOM.find('.yt-thumb-clip').addClass('visibility-hidden');
+			}
+			//stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap').find('img').addClass('visibility-hidden');
 		}
 	};
 
@@ -444,6 +467,9 @@ function peepStoryboard(){
 	@ Trigger: mouseout on ".yt-lockup"
 	*/
 	stbComponent.end = function(){
-		stbComponent.$targetDOM.find('.yt-thumb-clip').removeClass('visibility-hidden');
+		if(stbComponent.suggestionVideo == true)
+			stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap').find('img').removeClass('visibility-hidden');
+		else
+			stbComponent.$targetDOM.find('.yt-thumb-clip').removeClass('visibility-hidden');
 	}
 }
