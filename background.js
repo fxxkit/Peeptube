@@ -1,7 +1,7 @@
 console.log('Here is background scripts');
 
 
-chrome.webNavigation.onHistoryStateUpdated.addListener(function(e){
+chrome.webNavigation.onDOMContentLoaded.addListener(function(e){
 		var historyStateURL = e.url;
         console.log(e.url);
         

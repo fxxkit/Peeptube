@@ -5,6 +5,7 @@ o_peepTube.initModal();
 var currentURL = '';
 
 // Listen the background script msg
+//$(function(){
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
 	console.log('receive msg from background scripts');
 	//prevent duplicate button append
@@ -63,6 +64,7 @@ function peepTube(){
 		else{
 			//Add peep button
 			$('.yt-lockup').each(function(idx,e){
+
 				var currentDOM = e;
 				var resultUrl = $(currentDOM).find('a').attr('href');
 				//prevent duplicate button append (again)
@@ -293,13 +295,17 @@ function init_peepStoryboard(currentWebPage){
 	var o_storyboard = new peepStoryboard();
 	o_storyboard.currentWebPage = currentWebPage;
 	// Storyboard for suggestion videos
-	if(currentWebPage.indexOf('www.youtube.com/watch') != -1){
-		o_storyboard.suggestionVideo = true;
+	if(currentWebPage.indexOf('www.youtube.com/watch') !== -1){
+		o_storyboard.pageType = true;
 		addListner_peepStoryboard('related-list-item', o_storyboard);
 	}
-	// Storyboard for main page & searching results
+	//searching results
+	else if(currentWebPage.indexOf('www.youtube.com/results') != -1){
+
+	}
+	// Storyboard for main page & 	
 	else{
-		o_storyboard.suggestionVideo = false;
+		o_storyboard.pageType = false;
 		addListner_peepStoryboard('yt-lockup', o_storyboard);
 	}
 }
@@ -336,7 +342,7 @@ function peepStoryboard(){
 	var stbComponent = this;
 	stbComponent.imgs = [];
 	stbComponent.currentWebPage = NaN; // the current web url => to identify the rowWidth, init as NaN
-	stbComponent.suggestionVideo = false; // Set as "true" if the current page has suggestion videos
+	stbComponent.pageType = false; //  Set as "true" if the current page has suggestion videos
 	stbComponent.$targetDOM = NaN; // the mouseover ".yt-lockup" , init as NaN
 	stbComponent.ajaxStatus = false; // set as true if doing ajax
 
@@ -393,7 +399,7 @@ function peepStoryboard(){
 			rowWidth = stbComponent.$targetDOM.width();
 
 		// Get the thumbnail size 
-		if(stbComponent.suggestionVideo == false){
+		if(stbComponent.pageType == false){
 			thumbnailHeight = stbComponent.$targetDOM.find('.yt-thumb-clip > img').height();
 			thumbnailWidth = stbComponent.$targetDOM.find('.yt-thumb-default').width();
 		}
@@ -403,8 +409,8 @@ function peepStoryboard(){
 		}
 
 		//console.log('===================');
-		//console.log('thumbnailWidth: ' + thumbnailWidth);
-		//console.log('thumbnailHeight: ' + thumbnailHeight);
+		console.log('thumbnailWidth: ' + thumbnailWidth);
+		console.log('thumbnailHeight: ' + thumbnailHeight);
 		//console.log('===================');
 
 
@@ -425,7 +431,7 @@ function peepStoryboard(){
 				  rowWidth => The width of detectable row area(".yt-lockup" - "peepButton" )
 	*/
 	stbComponent.play = function(mouseEventObj){
-		if((stbComponent.$targetDOM.prev().hasClass('peepButton') || stbComponent.suggestionVideo == true)
+		if((stbComponent.$targetDOM.prev().hasClass('peepButton') || stbComponent.pageType == true)
 			&& stbComponent.imgs.length > 0 && stbComponent.ajaxStatus == false) {
 			var mouseOffsetX = mouseEventObj.offsetX;
 			var leftRatio = (mouseOffsetX*stbComponent.imgs.length)/rowWidth;
@@ -434,7 +440,7 @@ function peepStoryboard(){
 
 			
 			//console.log('width: ' + thumbnailWidth + "|| height: " + thumbnailHeight);
-			if(stbComponent.suggestionVideo == true){
+			if(stbComponent.pageType == true){
 				stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap')
 					.css({
 						'width' : thumbnailWidth + 'px',
@@ -467,7 +473,7 @@ function peepStoryboard(){
 	@ Trigger: mouseout on ".yt-lockup"
 	*/
 	stbComponent.end = function(){
-		if(stbComponent.suggestionVideo == true)
+		if(stbComponent.pageType == true)
 			stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap').find('img').removeClass('visibility-hidden');
 		else
 			stbComponent.$targetDOM.find('.yt-thumb-clip').removeClass('visibility-hidden');
