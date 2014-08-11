@@ -296,16 +296,18 @@ function init_peepStoryboard(currentWebPage){
 	o_storyboard.currentWebPage = currentWebPage;
 	// Storyboard for suggestion videos
 	if(currentWebPage.indexOf('www.youtube.com/watch') !== -1){
-		o_storyboard.pageType = true;
+		o_storyboard.pageType = 'suggestItem';
 		addListner_peepStoryboard('related-list-item', o_storyboard);
 	}
 	//searching results
 	else if(currentWebPage.indexOf('www.youtube.com/results') != -1){
+		o_storyboard.pageType = 'searchResult';
+		addListner_peepStoryboard('yt-lockup', o_storyboard);
 
 	}
-	// Storyboard for main page & 	
+	// Storyboard for main page	
 	else{
-		o_storyboard.pageType = false;
+		o_storyboard.pageType = 'mainPage';
 		addListner_peepStoryboard('yt-lockup', o_storyboard);
 	}
 }
@@ -342,7 +344,7 @@ function peepStoryboard(){
 	var stbComponent = this;
 	stbComponent.imgs = [];
 	stbComponent.currentWebPage = NaN; // the current web url => to identify the rowWidth, init as NaN
-	stbComponent.pageType = false; //  Set as "true" if the current page has suggestion videos
+	stbComponent.pageType = NaN; // [ 'searchResult', 'suggestItem','mainPage']
 	stbComponent.$targetDOM = NaN; // the mouseover ".yt-lockup" , init as NaN
 	stbComponent.ajaxStatus = false; // set as true if doing ajax
 
@@ -398,19 +400,25 @@ function peepStoryboard(){
 		else
 			rowWidth = stbComponent.$targetDOM.width();
 
-		// Get the thumbnail size 
-		if(stbComponent.pageType == false){
-			thumbnailHeight = stbComponent.$targetDOM.find('.yt-thumb-clip > img').height();
-			thumbnailWidth = stbComponent.$targetDOM.find('.yt-thumb-default').width();
-		}
-		else{
-			thumbnailHeight = stbComponent.$targetDOM.height();
-			thumbnailWidth = stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap').width();
+		// Get the thumbnail size
+		switch (stbComponent.pageType){
+			case 'suggestItem':
+				thumbnailHeight = stbComponent.$targetDOM.height();
+				thumbnailWidth = stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap').width();
+				break;
+			case 'searchResult':
+				thumbnailHeight = stbComponent.$targetDOM.find('.video-thumb > img').height();
+				thumbnailWidth = stbComponent.$targetDOM.find('.video-thumb > img').width();
+				break;
+			case 'mainPage':
+				thumbnailHeight = stbComponent.$targetDOM.find('.yt-thumb-clip > img').height();
+				thumbnailWidth = stbComponent.$targetDOM.find('.yt-thumb-default').width();
+				break;		
 		}
 
 		//console.log('===================');
-		console.log('thumbnailWidth: ' + thumbnailWidth);
-		console.log('thumbnailHeight: ' + thumbnailHeight);
+		//console.log('thumbnailWidth: ' + thumbnailWidth);
+		//console.log('thumbnailHeight: ' + thumbnailHeight);
 		//console.log('===================');
 
 
@@ -431,17 +439,16 @@ function peepStoryboard(){
 				  rowWidth => The width of detectable row area(".yt-lockup" - "peepButton" )
 	*/
 	stbComponent.play = function(mouseEventObj){
-		if((stbComponent.$targetDOM.prev().hasClass('peepButton') || stbComponent.pageType == true)
+		if((stbComponent.$targetDOM.prev().hasClass('peepButton') || stbComponent.pageType === 'suggestItem')
 			&& stbComponent.imgs.length > 0 && stbComponent.ajaxStatus == false) {
 			var mouseOffsetX = mouseEventObj.offsetX;
 			var leftRatio = (mouseOffsetX*stbComponent.imgs.length)/rowWidth;
 			var storyboardImg = stbComponent.imgs[Math.floor(leftRatio)];
 			var positionIdx = Math.floor((leftRatio - Math.floor(leftRatio))*25);
 
-			
-			//console.log('width: ' + thumbnailWidth + "|| height: " + thumbnailHeight);
-			if(stbComponent.pageType == true){
-				stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap')
+			switch (stbComponent.pageType){
+				case 'suggestItem':
+					stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap')
 					.css({
 						'width' : thumbnailWidth + 'px',
 						'margin': '0px 1px',
@@ -449,11 +456,22 @@ function peepStoryboard(){
 						'background-image': 'url(' + storyboardImg + ')',
 						'background-position': backgroundPosition[positionIdx]
 					});
-				//Hide the original thumbnail image
-				stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap').find('img').addClass('visibility-hidden');
-			}
-			else{
-				stbComponent.$targetDOM.find('.yt-thumb-default')
+					//Hide the original thumbnail image
+					stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap').find('img').addClass('visibility-hidden');
+					break;
+				case 'searchResult':
+					stbComponent.$targetDOM.find('.video-thumb')
+						.css({
+							'width' : thumbnailWidth + 'px',
+							'margin': '0px 1px',
+							'background-size' : backgroundSize,
+							'background-image': 'url(' + storyboardImg + ')',
+							'background-position': backgroundPosition[positionIdx]
+						});
+					stbComponent.$targetDOM.find('.video-thumb').find('img').addClass('visibility-hidden');
+					break;
+				case 'mainPage':
+					stbComponent.$targetDOM.find('.yt-thumb-default')
 					.css({
 						'width' : thumbnailWidth + 'px',
 						'margin': '0px 1px',
@@ -461,10 +479,10 @@ function peepStoryboard(){
 						'background-image': 'url(' + storyboardImg + ')',
 						'background-position': backgroundPosition[positionIdx]
 					});	
-				//Hide the original thumbnail image
-				stbComponent.$targetDOM.find('.yt-thumb-clip').addClass('visibility-hidden');
+					//Hide the original thumbnail image
+					stbComponent.$targetDOM.find('.yt-thumb-clip').addClass('visibility-hidden');
+					break;		
 			}
-			//stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap').find('img').addClass('visibility-hidden');
 		}
 	};
 
@@ -473,9 +491,16 @@ function peepStoryboard(){
 	@ Trigger: mouseout on ".yt-lockup"
 	*/
 	stbComponent.end = function(){
-		if(stbComponent.pageType == true)
-			stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap').find('img').removeClass('visibility-hidden');
-		else
-			stbComponent.$targetDOM.find('.yt-thumb-clip').removeClass('visibility-hidden');
+		switch (stbComponent.pageType){
+			case 'suggestItem':
+				stbComponent.$targetDOM.find('.yt-uix-simple-thumb-wrap').find('img').removeClass('visibility-hidden');
+				break;
+			case 'searchResult':
+				stbComponent.$targetDOM.find('.video-thumb').find('img').removeClass('visibility-hidden');
+				break;
+			case 'mainPage':
+				stbComponent.$targetDOM.find('.yt-thumb-clip').removeClass('visibility-hidden');
+				break;		
+		}
 	}
 }
