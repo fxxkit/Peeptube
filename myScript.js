@@ -1,6 +1,6 @@
 var o_peepTube = new peepTube();
 // initialize the content modal
-console.log('initialize the modal')
+console.log('initialize peepTube!');
 o_peepTube.initModal();
 var currentURL = '';
 
@@ -11,22 +11,22 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse){
 	//prevent duplicate button append
 	if(currentURL != msg.url){
 		if(msg.url.indexOf('www.youtube.com/results') != -1){
-			console.log('add btn on search result page');
+			console.info('[peepTube]add btn on search result page');
 			o_peepTube.pauseYTPlayer();// prevent voice keep play (Youtube bug!)
 			o_peepTube.appendBtn('search_results');
 		}
 		else if (msg.url.indexOf('www.youtube.com/watch') != -1){
-			console.log('add btn on watch video page');
+			console.info('[peepTube]add btn on watch video page');
 			o_peepTube.appendBtn('watch_video',msg.url);
 		}
 		else if(msg.url == 'http://www.youtube.com/' || msg.url == 'https://www.youtube.com/'){
-			console.log('add btn on watch main page');
+			console.info('[peepTube]add btn on watch main page');
 			o_peepTube.pauseYTPlayer(); // prevent voice keep play (Youtube bug!)
 			o_peepTube.appendBtn('main_page');
 		} 
 		
 		// Add "load modal" button event 
-		$('.peepButton').on('click',function(){		
+		$('.peepButton').off('click').on('click',function(){		
 			var clickedBtn = this;
 			o_peepTube.renderModal(clickedBtn);
 		});			
@@ -57,7 +57,7 @@ function peepTube(){
 			});
 			//Pause the Youtube video if peep suggestion video
 			$('.peepBtn-related').on('click',function(){
-				console.log('click suggestion video!');
+				//console.log('click suggestion video!');
 				peepTubeComponent.pauseYTPlayer();
 			});			
 		}		
@@ -112,6 +112,9 @@ function peepTube(){
 	};
 
 	peepTubeComponent.renderModal = function(clickedBtn){
+		//Clear the iframe in container first
+		$('#peepContainer').find('iframe').remove();			
+
 		$('body').css({"overflow":'hidden'});
 		var previewUrl = $(clickedBtn).next().eq(0).find('a').attr('href');
 		var splitToken = '/watch?v=';
@@ -171,7 +174,7 @@ function peepTube(){
 		$('#peepShrinkBtn').fadeOut();
 	};
 
-	// no use anymore
+	// This method has been deprecated
 	peepTubeComponent.redirectPage = function(){
 		var videoID = $('#YTplayer').attr('src').split('/v/')[1].split('?')[0];
 		peepTubeComponent.closeModal();
@@ -222,7 +225,6 @@ function peepTube(){
 
 	//Pause the youtube video & render shrinked window start with pause time
 	var initYTShrink = function(url){
-
 		var videoID = url.split('v=')[1]; // Get the video ID
 		console.log(videoID);
 		//console.log(ytplayer);
